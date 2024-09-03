@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "vuelos")
@@ -31,5 +32,8 @@ public class Vuelo implements Serializable {
     @ManyToOne
     @JoinColumn(name = "destino")
     private Aeropuerto aeropuertoDestino;*/
+
+    @ManyToMany(mappedBy = "vuelos")
+    private Set<Escala> escalas;
 
 }

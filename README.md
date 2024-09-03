@@ -14,4 +14,4 @@ Este es un taller realizado con **Spring Boot** y desarrollado en **IntelliJ IDE
 
 ---
 
-¡Gracias por revisar nuestro proyecto! 😊
+¡Gracias por revisar nuestro proyecto!
