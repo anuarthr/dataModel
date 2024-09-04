@@ -2,15 +2,20 @@ package com.data.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "reservas")
 @Data
 public class Reserva implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idReserva;
 
     @ManyToOne

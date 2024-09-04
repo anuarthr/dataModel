@@ -1,15 +1,18 @@
 package com.data.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "clientes")
 public class Cliente implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idCliente;
 
     @Column(nullable = false)
@@ -23,6 +26,4 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String email;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime fechaNacimiento;
 }

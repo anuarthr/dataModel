@@ -2,16 +2,19 @@ package com.data.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "vuelos")
 @Data
 public class Vuelo implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idVuelo;
 
     private String origen;
@@ -21,19 +24,5 @@ public class Vuelo implements Serializable {
     private Integer duracion;
     private Integer capacidad;
 
-    /*@ManyToOne
-    @JoinColumn(name = "idAerolinea")
-    private Aerolinea aerolinea;
-
-    @ManyToOne
-    @JoinColumn(name = "origen")
-    private Aeropuerto aeropuertoOrigen;
-
-    @ManyToOne
-    @JoinColumn(name = "destino")
-    private Aeropuerto aeropuertoDestino;*/
-
-    @ManyToMany(mappedBy = "vuelos")
-    private Set<Escala> escalas;
 
 }
