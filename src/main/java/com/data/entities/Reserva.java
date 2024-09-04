@@ -1,18 +1,17 @@
 package com.data.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "reservas")
-@Data
 public class Reserva implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,9 +21,16 @@ public class Reserva implements Serializable {
     @JoinColumn(name = "idCliente")
     private Cliente cliente;
 
-    @ManyToOne
-    @JoinColumn(name = "idVuelo")
-    private Vuelo vuelo;
+    @ManyToMany
+    @JoinTable(
+            name = "reserva_vuelo",
+            joinColumns = @JoinColumn(name = "reserva_id"),
+            inverseJoinColumns = @JoinColumn(name = "vuelo_id")
+    )
+    private List<Vuelo> vuelos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reserva")
+    private List<Pasajero> pasajeros = new ArrayList<>();
 
     @Column(name = "fecha_reserva")
     private LocalDate fechaDeReserva;
@@ -32,3 +38,5 @@ public class Reserva implements Serializable {
     @Column(name = "numero_pasajeros")
     private Integer numeroDePasajeros;
 }
+
+

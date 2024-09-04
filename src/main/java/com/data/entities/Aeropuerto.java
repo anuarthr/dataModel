@@ -1,17 +1,16 @@
 package com.data.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "aeropuertos")
-@Data
 public class Aeropuerto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,7 +25,6 @@ public class Aeropuerto implements Serializable {
     @Column(nullable = false)
     private String pais;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "escala_id", referencedColumnName = "idEscala")
-    private Escala escala;
+    @OneToMany(mappedBy = "aeropuerto")
+    private List<Vuelo> vuelos = new ArrayList<>();
 }
