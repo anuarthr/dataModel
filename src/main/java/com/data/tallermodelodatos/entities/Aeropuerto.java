@@ -1,4 +1,4 @@
-package com.data.entities;
+package com.data.tallermodelodatos.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,21 +10,21 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "aerolineas")
-public class Aerolinea implements Serializable {
+@Table(name = "aeropuertos")
+public class Aeropuerto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idAerolinea;
+    private Long idAeropuerto;
 
     @Column(nullable = false)
     private String nombre;
 
     @Column(nullable = false)
-    private Long codigoAerolinea;
+    private String ciudad;
 
     @Column(nullable = false)
-    private String paisDeOrigen;
+    private String pais;
 
-    @OneToMany(mappedBy = "aerolinea")
+    @OneToMany(mappedBy = "aeropuerto")
     private List<Vuelo> vuelos = new ArrayList<>();
 }

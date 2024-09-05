@@ -1,4 +1,4 @@
-package com.data.entities;
+package com.data.tallermodelodatos.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

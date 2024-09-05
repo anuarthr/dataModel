@@ -1,6 +1,6 @@
-package com.data.repositories;
+package com.data.tallermodelodatos.repositories;
 
-import com.data.entities.Aeropuerto;
+import com.data.tallermodelodatos.entities.Aeropuerto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AeropuertoRepository extends JpaRepository<Aeropuerto, Long> {
