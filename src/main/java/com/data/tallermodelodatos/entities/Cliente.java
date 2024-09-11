@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,5 +28,5 @@ public class Cliente implements Serializable {
     private String email;
 
     @OneToMany(mappedBy = "cliente")
-    private ArrayList<Reserva> reservas = new ArrayList<>();
+    private List<Reserva> reservas = new ArrayList<>();
 }

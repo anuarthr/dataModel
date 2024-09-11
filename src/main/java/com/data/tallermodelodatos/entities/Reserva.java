@@ -38,5 +38,3 @@ public class Reserva implements Serializable {
     @Column(name = "numero_pasajeros")
     private Integer numeroDePasajeros;
 }
-
-
