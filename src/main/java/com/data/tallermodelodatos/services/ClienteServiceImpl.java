@@ -35,7 +35,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public List<Cliente> buscarClientesbyIds(List<Long> ids) {
-        return clienteRepository.findAllById(ids);
+        return clienteRepository.findByIdIn(ids);
     }
 
     @Override
