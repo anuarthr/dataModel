@@ -24,16 +24,16 @@ public class AeropuertoServiceImpl implements AeropuertoService{
     public List<Aeropuerto> buscarAeropuertos() {return aeropuertoRepository.findAll();}
 
     @Override
-    public List<Aeropuerto> buscarAeropuertoPorNombre(String nombre) {return aeropuertoRepository.findByNombre(nombre);}
+    public List<Aeropuerto> buscarAeropuertosPorNombre(String nombre) {return aeropuertoRepository.findByNombre(nombre);}
 
     @Override
-    public List<Aeropuerto> buscarAeropuertoPorIds(List<Long> ids) {return aeropuertoRepository.findByIdIn(ids);}
+    public List<Aeropuerto> buscarAeropuertosPorIds(List<Long> ids) {return aeropuertoRepository.findByIdIn(ids);}
 
     @Override
-    public Aeropuerto buscarAeropuertoPorCiudad(String ciudad) {return aeropuertoRepository.findByCiudad(ciudad);}
+    public List<Aeropuerto> buscarAeropuertosPorCiudad(String ciudad) {return aeropuertoRepository.findByCiudad(ciudad);}
 
     @Override
-    public Aeropuerto buscarAeropuertoPorPais(String pais) {return aeropuertoRepository.findByPais(pais);}
+    public List<Aeropuerto> buscarAeropuertosPorPais(String pais) {return aeropuertoRepository.findByPais(pais);}
 
     @Override
     public Aeropuerto actualizarAeropuerto(Aeropuerto aeropuerto) {return aeropuertoRepository.save(aeropuerto);}

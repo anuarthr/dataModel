@@ -8,6 +8,6 @@ import java.util.List;
 public interface AeropuertoRepository extends JpaRepository<Aeropuerto, Long> {
     List<Aeropuerto> findByNombre(String nombre);
     List<Aeropuerto> findByIdIn(List<Long> ids);
-    Aeropuerto findByCiudad(String ciudad);
-    Aeropuerto findByPais(String pais);
+    List<Aeropuerto> findByCiudad(String ciudad);
+    List<Aeropuerto> findByPais(String pais);
 }

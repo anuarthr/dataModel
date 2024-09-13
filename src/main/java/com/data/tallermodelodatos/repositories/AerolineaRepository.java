@@ -9,5 +9,5 @@ public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
     List<Aerolinea> findByNombre(String nombre);
     List<Aerolinea> findByIdIn(List<Long> ids);
     Aerolinea findByCodigoAerolinea(Long codigo);
-    Aerolinea findByPaisDeOrigen(String paisDeOrigen);
+    List<Aerolinea> findByPaisDeOrigen(String paisDeOrigen);
 }

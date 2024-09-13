@@ -33,7 +33,7 @@ public class AerolineaServiceImpl implements AerolineaService {
     public Aerolinea buscarAerolineaPorCodigo(Long codigo) {return aerolineaRepository.findByCodigoAerolinea(codigo);}
 
     @Override
-    public Aerolinea buscarAerolineaPorPaisDeOrigen(String paisDeOrigen) {return aerolineaRepository.findByPaisDeOrigen(paisDeOrigen);}
+    public List<Aerolinea> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen) {return aerolineaRepository.findByPaisDeOrigen(paisDeOrigen);}
 
     @Override
     public Aerolinea actualizarAerolinea(Aerolinea aerolinea) {return aerolineaRepository.save(aerolinea);}
