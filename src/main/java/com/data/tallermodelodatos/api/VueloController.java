@@ -1,6 +1,5 @@
 package com.data.tallermodelodatos.api;
 
-import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.entities.Vuelo;
 import com.data.tallermodelodatos.services.ClienteServiceImpl;
 import com.data.tallermodelodatos.services.VueloService;
@@ -17,11 +16,9 @@ import java.util.Optional;
 
 public class VueloController {
     private final VueloService vueloService;
-    private final ClienteServiceImpl clienteServiceImpl;
 
     public VueloController(VueloService vueloService, ClienteServiceImpl clienteServiceImpl){
         this.vueloService = vueloService;
-        this.clienteServiceImpl = clienteServiceImpl;
     }
     @GetMapping()
     public ResponseEntity<List<Vuelo>> getAllVuelos(){
