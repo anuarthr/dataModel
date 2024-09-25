@@ -52,4 +52,9 @@ public class PasajeroServiceImpl implements PasajeroService{
             return pasajeroRepository.save(oldPasajero);
         });
     }
+
+    @Override
+    public void eliminarPasajero(Long id) {
+        pasajeroRepository.deleteById(id);
+    }
 }

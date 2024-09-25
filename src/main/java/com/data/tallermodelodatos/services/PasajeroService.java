@@ -3,10 +3,11 @@ package com.data.tallermodelodatos.services;
 import com.data.tallermodelodatos.entities.Aerolinea;
 import com.data.tallermodelodatos.entities.Aeropuerto;
 import com.data.tallermodelodatos.entities.Pasajero;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public interface PasajeroService {
     Pasajero guardarPasajero(Pasajero pasajero);
     Optional<Pasajero> buscarPasajeroPorId(Long id);
@@ -18,4 +19,5 @@ public interface PasajeroService {
     List<Pasajero> buscarPasajerosPorNacionalidad(String nacionalidad);
     Pasajero actualizarPasajero(Pasajero pasajero);
     Optional<Pasajero> actualizarPasajero(Long id, Pasajero pasajero);
+    void eliminarPasajero(Long id);
 }

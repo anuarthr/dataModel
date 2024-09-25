@@ -48,4 +48,9 @@ public class AerolineaServiceImpl implements AerolineaService {
             return aerolineaRepository.save(oldAerolinea);
         });
     }
+
+    @Override
+    public void eliminarAerolinea(Long id) {
+        aerolineaRepository.deleteById(id);
+    }
 }

@@ -2,10 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.entities.Aerolinea;
 import com.data.tallermodelodatos.entities.Aeropuerto;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public interface AeropuertoService {
     Aeropuerto guardarAeropuerto(Aeropuerto aeropuerto);
     Optional<Aeropuerto> buscarAeropuertoPorId(Long id);
@@ -16,4 +18,5 @@ public interface AeropuertoService {
     List<Aeropuerto> buscarAeropuertosPorPais(String pais);
     Aeropuerto actualizarAeropuerto(Aeropuerto aeropuerto);
     Optional<Aeropuerto> actualizarAeropuerto(Long id, Aeropuerto aeropuerto);
+    void eliminarAeropuerto(Long id);
 }
