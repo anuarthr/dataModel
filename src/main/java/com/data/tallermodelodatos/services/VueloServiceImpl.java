@@ -2,9 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.entities.Vuelo;
 import com.data.tallermodelodatos.repositories.VueloRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+@Service
 
 public class VueloServiceImpl implements VueloService {
 
@@ -62,5 +65,10 @@ public class VueloServiceImpl implements VueloService {
             oldVuelo.setAeropuerto(vuelo.getAeropuerto());
             return vueloRepository.save(oldVuelo);
         });
+    }
+
+    @Override
+    public void deleteVuelo(Long id) {
+        vueloRepository.deleteById(id);
     }
 }

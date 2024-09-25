@@ -12,4 +12,5 @@ public interface ReservaService {
     List<Reserva> buscarReservasPorCliente(Long clienteId);
     Reserva actualizarReserva(Reserva reserva);
     Optional<Reserva> actualizarReserva(Long id, Reserva reserva);
+    void deleteReserva(Long id);
 }

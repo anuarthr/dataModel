@@ -14,4 +14,5 @@ public interface VueloService {
     List<Vuelo> buscarVuelosPorDestino(String destino);
     Vuelo actualizarVuelo(Vuelo vuelo);
     Optional<Vuelo> actualizarVuelo(Long id, Vuelo vuelo);
+    void deleteVuelo(Long id);
 }

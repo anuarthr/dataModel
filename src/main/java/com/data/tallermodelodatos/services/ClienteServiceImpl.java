@@ -2,9 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.entities.Cliente;
 import com.data.tallermodelodatos.repositories.ClienteRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+@Service
 
 public class ClienteServiceImpl implements ClienteService {
 
@@ -58,5 +61,10 @@ public class ClienteServiceImpl implements ClienteService {
             oldClient.setTelefono(cliente.getTelefono());
             return clienteRepository.save(oldClient);
         });
+    }
+
+    @Override
+    public void deleteCliente(Long id) {
+        clienteRepository.deleteById(id);
     }
 }

@@ -2,9 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.repositories.ReservaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+@Service
 
 public class ReservaServiceImpl implements ReservaService {
 
@@ -48,6 +51,11 @@ public class ReservaServiceImpl implements ReservaService {
             oldReserva.setNumeroDePasajeros(reserva.getNumeroDePasajeros());
             return reservaRepository.save(oldReserva);
         });
+    }
+
+    @Override
+    public void deleteReserva(Long id) {
+        reservaRepository.deleteById(id);
     }
 
 }
