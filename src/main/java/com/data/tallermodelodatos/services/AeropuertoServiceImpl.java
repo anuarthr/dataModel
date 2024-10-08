@@ -2,9 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.entities.Aeropuerto;
 import com.data.tallermodelodatos.repositories.AeropuertoRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+@Service
 
 public class AeropuertoServiceImpl implements AeropuertoService{
 

@@ -2,9 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.entities.Aerolinea;
 import com.data.tallermodelodatos.repositories.AerolineaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+@Service
 
 public class AerolineaServiceImpl implements AerolineaService {
 

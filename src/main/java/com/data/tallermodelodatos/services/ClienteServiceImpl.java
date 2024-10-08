@@ -13,10 +13,6 @@ public class ClienteServiceImpl implements ClienteService {
 
     private ClienteRepository clienteRepository;
 
-    /*public void setClienteRepository(ClienteRepository clienteRepository) {
-        setClienteRepository(clienteRepository);
-    }*/
-
     public ClienteServiceImpl(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
     }
@@ -25,7 +21,6 @@ public class ClienteServiceImpl implements ClienteService {
     public Cliente guardarCliente(Cliente cliente) {
         return clienteRepository.save(cliente);
     }
-
     @Override
     public Optional<Cliente> buscarClientePorId(Long id) {
         return clienteRepository.findById(id);

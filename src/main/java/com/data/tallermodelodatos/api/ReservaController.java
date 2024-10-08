@@ -1,64 +1,70 @@
 package com.data.tallermodelodatos.api;
-
+import com.data.tallermodelodatos.dto.ReservaDto;
+import com.data.tallermodelodatos.dto.ReservaMapper;
 import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.services.ReservaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/reservas")
-
 public class ReservaController {
-    private final ReservaService reservaService;
 
-    public ReservaController(ReservaService reservaService) {
+    private final ReservaService reservaService;
+    private final ReservaMapper reservaMapper;
+
+    public ReservaController(ReservaService reservaService, ReservaMapper reservaMapper) {
         this.reservaService = reservaService;
+        this.reservaMapper = reservaMapper;
     }
+
     @GetMapping
-    public ResponseEntity<List<Reserva>> getAllReservas() {
-        return ResponseEntity.ok(reservaService.buscarReservas());
+    public ResponseEntity<List<ReservaDto>> getAllReservas() {
+        List<ReservaDto> reservasDto = reservaService.buscarReservas().stream()
+                .map(reservaMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(reservasDto);
     }
-    @GetMapping("/idReserva")
-    public ResponseEntity<Reserva> getReservaById(@PathVariable("idReserva") Long id){
+
+    @GetMapping("/{idReserva}")
+    public ResponseEntity<ReservaDto> getReservaById(@PathVariable("idReserva") Long id) {
         return reservaService.buscarReservaPorId(id)
-                .map(c -> ResponseEntity.ok().body(c))
+                .map(reservaMapper::toDto)
+                .map(reservaDto -> ResponseEntity.ok().body(reservaDto))
                 .orElse(ResponseEntity.notFound().build());
     }
-    @PostMapping()
-    public ResponseEntity<Reserva> createReserva(@RequestBody Reserva reserva){
-        return createNewReserva(reserva);
-        /*Reserva newReserva = reservaService.guardarReserva(reserva);
+
+    @PostMapping
+    public ResponseEntity<ReservaDto> createReserva(@RequestBody ReservaDto reservaDto) {
+        Reserva nuevaReserva = reservaMapper.toReserva(reservaDto);
+        Reserva reservaGuardada = reservaService.guardarReserva(nuevaReserva);
+        ReservaDto reservaGuardadaDto = reservaMapper.toDto(reservaGuardada);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(newReserva.getIdReserva())
+                .buildAndExpand(reservaGuardadaDto.idReserva())
                 .toUri();
-        return ResponseEntity.created(location).body(newReserva);*/
+        return ResponseEntity.created(location).body(reservaGuardadaDto);
     }
-    @PutMapping("/id")
-    public ResponseEntity<Reserva> updateReserva(@PathVariable Long id, @RequestBody Reserva reserva){
-        Optional<Reserva> reservaUpdated = reservaService.actualizarReserva(id, reserva);
-        return reservaUpdated
-                .map(c -> ResponseEntity.ok(c))
-                .orElseGet(()->{
-                    return createNewReserva(reserva);
-                });
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservaDto> updateReserva(@PathVariable Long id, @RequestBody ReservaDto reservaDto) {
+        Reserva reserva = reservaMapper.toReserva(reservaDto);
+        Optional<Reserva> reservaActualizada = reservaService.actualizarReserva(id, reserva);
+
+        return reservaActualizada
+                .map(r -> ResponseEntity.ok(reservaMapper.toDto(r)))
+                .orElseGet(() -> createReserva(reservaDto));
     }
-    private ResponseEntity<Reserva> createNewReserva(Reserva reserva){
-        Reserva newReserva = reservaService.guardarReserva(reserva);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(newReserva.getIdReserva())
-                .toUri();
-        return ResponseEntity.created(location).body(newReserva);
-    }
-    @DeleteMapping("/id")
-    public ResponseEntity<Reserva> deleteReserva(@PathVariable Long id){
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReserva(@PathVariable Long id) {
         reservaService.deleteReserva(id);
         return ResponseEntity.noContent().build();
     }
 }
+
