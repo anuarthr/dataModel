@@ -2,9 +2,16 @@ package com.data.tallermodelodatos.dto;
 
 import com.data.tallermodelodatos.entities.Pasajero;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = ReservaMapper.class)
+@Mapper(componentModel = "spring")
 public interface PasajeroMapper {
-    PasajeroDto toDto(Pasajero pasajero);
-    Pasajero toPasajero(PasajeroDto pasajeroDto);
+    PasajeroMapper INSTANCE = Mappers.getMapper( PasajeroMapper.class );
+    Pasajero pasajeroDTOToPasajero(PasajeroDto pasajeroDto);
+    @Mapping(target = "id", ignore = true)
+    Pasajero pasajeroDTOWithoutIdToPasajero(PasajeroDto pasajeroDto);
+    PasajeroDto pasajeroToPasajeroDTO(Pasajero pasajero);
+    @Mapping(target = "id", ignore = true)
+    PasajeroDto pasajeroToPasajeroDTOWithoutId(Pasajero pasajero);
 }

@@ -1,6 +1,7 @@
 package com.data.tallermodelodatos.api;
 
-import com.data.tallermodelodatos.entities.Aerolinea;
+import com.data.tallermodelodatos.dto.ClienteMapper;
+import com.data.tallermodelodatos.dto.AerolineaDto;
 import com.data.tallermodelodatos.services.AerolineaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@RequestMapping("/api/v1/aerolinea")
+@RequestMapping("/api/v1/aerolineas")
 public class AerolineaController {
 
         private final AerolineaService aerolineaService;
@@ -22,25 +23,25 @@ public class AerolineaController {
         }
 
         @GetMapping()
-        public ResponseEntity<List<Aerolinea>> getAllAerolinea() {
+        public ResponseEntity<List<AerolineaDto>> getAllAerolinea() {
             return ResponseEntity.ok(aerolineaService.buscarAerolineas());
         }
 
         @GetMapping("/id")
-        public ResponseEntity<Aerolinea> getAerolineaById(@PathVariable Long id) {
+        public ResponseEntity<AerolineaDto> getAerolineaById(@PathVariable Long id) {
             return aerolineaService.buscarAerolineaPorId(id)
                     .map(aerolinea -> ResponseEntity.ok().body(aerolinea))
                     .orElse(ResponseEntity.notFound().build());
         }
 
         @PostMapping
-        public ResponseEntity<Aerolinea> createAerolinea(@RequestBody Aerolinea aerolinea) throws URISyntaxException {
+        public ResponseEntity<AerolineaDto> createAerolinea(@RequestBody AerolineaDto aerolinea) throws URISyntaxException {
             return crearNuevoAerolinea(aerolinea);
         }
 
         @PutMapping("/id")
-        public ResponseEntity<Aerolinea> actualizarAerolinea(@PathVariable Long id, @RequestBody Aerolinea nuevoAerolinea) throws URISyntaxException {
-            Optional<Aerolinea> aerolineaUpdate = aerolineaService.actualizarAerolinea(id, nuevoAerolinea);
+        public ResponseEntity<AerolineaDto> actualizarAerolinea(@PathVariable Long id, @RequestBody AerolineaDto nuevoAerolinea) throws URISyntaxException {
+            Optional<AerolineaDto> aerolineaUpdate = aerolineaService.actualizarAerolinea(id, nuevoAerolinea);
             return aerolineaUpdate.map(aerolinea -> ResponseEntity.ok(aerolinea))
                     .orElseGet(() -> {
                         return crearNuevoAerolinea(nuevoAerolinea);
@@ -53,11 +54,11 @@ public class AerolineaController {
             return ResponseEntity.noContent().build();
         }
 
-        private ResponseEntity<Aerolinea> crearNuevoAerolinea(Aerolinea aerolinea) {
-            Aerolinea nuevoAerolinea = aerolineaService.guardarAerolinea(aerolinea);
+        private ResponseEntity<AerolineaDto> crearNuevoAerolinea(AerolineaDto aerolinea) {
+            AerolineaDto nuevoAerolinea = aerolineaService.guardarAerolinea(aerolinea);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(nuevoAerolinea.getIdAerolinea())
+                    .buildAndExpand(nuevoAerolinea.idAerolinea())
                     .toUri();
             return ResponseEntity.created(location).body(nuevoAerolinea);
         }

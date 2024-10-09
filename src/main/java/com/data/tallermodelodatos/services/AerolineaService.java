@@ -1,6 +1,6 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.entities.Aerolinea;
+import com.data.tallermodelodatos.dto.AerolineaDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,14 +8,14 @@ import java.util.Optional;
 
 @Service
 public interface AerolineaService {
-    Aerolinea guardarAerolinea(Aerolinea aerolinea);
-    Optional<Aerolinea> buscarAerolineaPorId(Long id);
-    List<Aerolinea> buscarAerolineas();
-    List<Aerolinea> buscarAerolineasPorNombre(String nombre);
-    List<Aerolinea> buscarAerolineasPorIds(List<Long> ids);
-    Aerolinea buscarAerolineaPorCodigo(Long codigo);
-    List<Aerolinea> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen);
-    Aerolinea actualizarAerolinea(Aerolinea aerolinea);
-    Optional<Aerolinea> actualizarAerolinea(Long id, Aerolinea aerolinea);
+    AerolineaDto guardarAerolinea(AerolineaDto aerolinea);
+    Optional<AerolineaDto> buscarAerolineaPorId(Long id);
+    List<AerolineaDto> buscarAerolineas();
+    List<AerolineaDto> buscarAerolineasPorNombre(String nombre);
+    List<AerolineaDto> buscarAerolineasPorIds(List<Long> ids);
+    AerolineaDto buscarAerolineaPorCodigo(Long codigo);
+    List<AerolineaDto> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen);
+    AerolineaDto actualizarAerolinea(AerolineaDto aerolinea);
+    Optional<AerolineaDto> actualizarAerolinea(Long id, AerolineaDto aerolinea);
     void eliminarAerolinea(Long id);
 }
