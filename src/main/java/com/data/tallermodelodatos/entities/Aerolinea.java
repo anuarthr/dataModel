@@ -1,5 +1,6 @@
 package com.data.tallermodelodatos.entities;
 
+import com.data.tallermodelodatos.dto.AerolineaDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

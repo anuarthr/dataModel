@@ -24,40 +24,55 @@ public class AerolineaServiceImpl implements AerolineaService {
     }
 
     @Override
-    public AerolineaDto guardarAerolinea(AerolineaDto aerolinea) {return aerolineaMapper.toDto(aerolineaRepository.save(aerolineaMapper.toAerolinea(aerolinea)));}
+    public AerolineaDto guardarAerolinea(AerolineaDto aerolinea) {
+        return aerolineaMapper.aerolineaToAerolineaDTO(aerolineaRepository.save(aerolineaMapper.aerolineaDTOWithoutIdToAerolinea(aerolinea)));}
 
     @Override
     public Optional<AerolineaDto> buscarAerolineaPorId(Long id) {
-        return aerolineaRepository.findById(id).map(aerolinea -> aerolineaMapper.toDto(aerolinea));
-    }
+        return aerolineaRepository.findById(id).map(
+                aerolinea -> aerolineaMapper.aerolineaToAerolineaDTO(aerolinea));}
 
     @Override
     public List<AerolineaDto> buscarAerolineas() {
         List<AerolineaDto> aerolineas = new ArrayList<>();
-        return aerolineaRepository.findAll().forEach(aerolinea -> aerolineaMapper.toDto());
+        aerolineaRepository.findAll().forEach(
+                aerolinea -> aerolineas.add(aerolineaMapper.aerolineaToAerolineaDTOWithoutId(aerolinea)));
+        return aerolineas;}
+    @Override
+    public List<AerolineaDto> buscarAerolineasPorNombre(String nombre) {
+        List<AerolineaDto> aerolineas = new ArrayList<>();
+        aerolineaRepository.findAllByNombre(nombre).forEach(
+                aerolinea -> aerolineas.add(aerolineaMapper.aerolineaToAerolineaDTOWithoutId(aerolinea)));
+        return aerolineas;}
+
+    @Override
+    public List<AerolineaDto> buscarAerolineasPorIds(List<Long> ids) {
+        List<AerolineaDto> aerolineas = new ArrayList<>();
+        aerolineaRepository.findByIdIn(ids).forEach(
+                aerolinea -> aerolineas.add(aerolineaMapper.aerolineaToAerolineaDTOWithoutId(aerolinea)));
+        return aerolineas;}
+
+    @Override
+    public Optional<AerolineaDto> buscarAerolineaPorCodigo(Long codigo) {
+        return aerolineaRepository.findByCodigoAerolinea(codigo)
+                .map(aerolinea -> aerolineaMapper.aerolineaToAerolineaDto(aerolinea));
     }
-    @Override
-    public List<AerolineaDto> buscarAerolineasPorNombre(String nombre) {return aerolineaRepository.findByNombre(nombre);}
+
 
     @Override
-    public List<AerolineaDto> buscarAerolineasPorIds(List<Long> ids) {return aerolineaRepository.findByIdIn(ids);}
-
-    @Override
-    public AerolineaDto buscarAerolineaPorCodigo(Long codigo) {return aerolineaRepository.findByCodigoAerolinea(codigo);}
-
-    @Override
-    public List<AerolineaDto> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen) {return aerolineaRepository.findByPaisDeOrigen(paisDeOrigen);}
-
-    @Override
-    public AerolineaDto actualizarAerolinea(AerolineaDto aerolinea) {return aerolineaRepository.save(aerolinea);}
+    public List<AerolineaDto> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen) {
+        List<AerolineaDto> aerolineas = new ArrayList<>();
+        aerolineaRepository.findAllByNombre(paisDeOrigen).forEach(
+                aerolinea -> aerolineas.add(aerolineaMapper.aerolineaToAerolineaDTOWithoutId(aerolinea)));
+        return aerolineas;}
 
     @Override
     public Optional<AerolineaDto> actualizarAerolinea(Long id, AerolineaDto aerolinea) {
         return aerolineaRepository.findById(id).map(oldAerolinea -> {
-            oldAerolinea.setNombre(aerolinea.getNombre());
-            oldAerolinea.setCodigoAerolinea(aerolinea.getCodigoAerolinea());
-            oldAerolinea.setPaisDeOrigen(aerolinea.getPaisDeOrigen());
-            oldAerolinea.setVuelos(aerolinea.getVuelos());
+            oldAerolinea.setNombre(aerolinea.nombre());
+            oldAerolinea.setCodigoAerolinea(aerolinea.codigoAerolinea());
+            oldAerolinea.setPaisDeOrigen(aerolinea.paisDeOrigen());
+            oldAerolinea.setVuelos(aerolinea.vuelos());
             return aerolineaRepository.save(oldAerolinea);
         });
     }

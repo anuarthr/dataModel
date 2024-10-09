@@ -15,7 +15,8 @@ public interface AerolineaMapper {
     Aerolinea aerolineaToDTO(AerolineaDto aerolineaDto);
     @Mapping(target = "id", ignore = true)
     Aerolinea aerolineaDTOWithoutIdToAerolinea(AerolineaDto aerolineaDto);
-    AerolineaDto aerolineaToAerolineaDTO(Aerolinea aerolinea);
+    AerolineaDto aerolineaToAerolineaDto(Aerolinea aerolinea);
     @Mapping(target = "id", ignore = true)
     AerolineaDto aerolineaToAerolineaDTOWithoutId(Aerolinea aerolinea);
+    List<Vuelo> vueloDtosToVuelos(List<VueloDto> vueloDtos);
 }

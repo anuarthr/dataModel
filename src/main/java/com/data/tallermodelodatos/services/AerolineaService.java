@@ -13,7 +13,7 @@ public interface AerolineaService {
     List<AerolineaDto> buscarAerolineas();
     List<AerolineaDto> buscarAerolineasPorNombre(String nombre);
     List<AerolineaDto> buscarAerolineasPorIds(List<Long> ids);
-    AerolineaDto buscarAerolineaPorCodigo(Long codigo);
+    Optional<AerolineaDto> buscarAerolineaPorCodigo(Long codigo);
     List<AerolineaDto> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen);
     AerolineaDto actualizarAerolinea(AerolineaDto aerolinea);
     Optional<AerolineaDto> actualizarAerolinea(Long id, AerolineaDto aerolinea);
