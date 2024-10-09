@@ -2,9 +2,17 @@ package com.data.tallermodelodatos.dto;
 
 import com.data.tallermodelodatos.entities.Cliente;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ClienteMapper {
-    ClienteDto toDto(Cliente cliente);
-    Cliente toCliente(ClienteDto clienteDto);
+    ClienteMapper INSTANCE = Mappers.getMapper( ClienteMapper.class );
+    Cliente clienteDtoToCliente(ClienteDto clienteDto);
+    @Mapping(target = "id", ignore = true)
+    Cliente clienteDtoWithoutIdToCliente(ClienteDto clienteDto);
+    ClienteDto clienteToClienteDto(Cliente cliente);
+    @Mapping(target = "id", ignore = true)
+    ClienteDto clienteToClienteDtoWithoutId(Cliente cliente);
+
 }

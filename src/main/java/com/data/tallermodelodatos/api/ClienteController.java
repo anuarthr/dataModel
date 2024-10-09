@@ -1,61 +1,58 @@
 package com.data.tallermodelodatos.api;
-
 import com.data.tallermodelodatos.dto.ClienteDto;
-import com.data.tallermodelodatos.entities.Cliente;
-import com.data.tallermodelodatos.dto.ClienteMapper;
 import com.data.tallermodelodatos.services.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.data.tallermodelodatos.exception.ClientNotFoundException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/clientes")
 public class ClienteController {
-    private final ClienteService clienteService;
-    private final ClienteMapper clienteMapper;
 
-    public ClienteController(ClienteService clienteService, ClienteMapper clienteMapper) {
+    private final ClienteService clienteService;
+
+    public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
-        this.clienteMapper = clienteMapper;
     }
 
     @GetMapping()
     public ResponseEntity<List<ClienteDto>> getAllClientes() {
-        List<Cliente> clientes = clienteService.buscarClientes();
-        List<ClienteDto> clienteDtos = clientes.stream()
-                .map(clienteMapper::toDto)
-                .toList();
-        return ResponseEntity.ok(clienteDtos);
+        List<ClienteDto> clientes = clienteService.buscarClientes();
+        return ResponseEntity.ok(clientes);
     }
 
-    @GetMapping("/{idCliente}")
-    public ResponseEntity<ClienteDto> getClienteById(@PathVariable("idCliente") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDto> getClienteById(@PathVariable Long id) {
+        // Convertimos la entidad Cliente a DTO si se encuentra
         return clienteService.buscarClientePorId(id)
-                .map(cliente -> ResponseEntity.ok(clienteMapper.toDto(cliente)))
-                .orElse(ResponseEntity.notFound().build());
+                .map(clienteDto -> ResponseEntity.ok().body(clienteDto))
+                .orElseThrow(ClientNotFoundException::new);
     }
+
     @PostMapping()
-    public ResponseEntity<ClienteDto> createCliente(@RequestBody ClienteDto clienteDto) {
-        Cliente cliente = clienteMapper.toCliente(clienteDto);
-        Cliente newCliente = clienteService.guardarCliente(cliente);
-        ClienteDto newClienteDto = clienteMapper.toDto(newCliente);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(newClienteDto.idCliente())
-                .toUri();
-        return ResponseEntity.created(location).body(newClienteDto);
+    public ResponseEntity<ClienteDto> createCliente(@RequestBody ClienteDto clienteDto) throws URISyntaxException {
+        return createNewCliente(clienteDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteDto> updateCliente(@PathVariable Long id, @RequestBody ClienteDto clienteDto) {
-        Cliente cliente = clienteMapper.toCliente(clienteDto);
-        Optional<Cliente> clienteUpdated = clienteService.actualizarCliente(id, cliente);
-        return clienteUpdated
-                .map(c -> ResponseEntity.ok(clienteMapper.toDto(c)))
-                .orElseGet(() -> createCliente(clienteDto));
+    public ResponseEntity<ClienteDto> updateCliente(@PathVariable Long id, @RequestBody ClienteDto newClienteDto) {
+        Optional<ClienteDto> clienteUpdated = clienteService.actualizarCliente(id, newClienteDto);
+        return clienteUpdated.map(cliente -> ResponseEntity.ok(cliente))
+                .orElseGet(() -> createNewCliente(newClienteDto));
+    }
+
+    private ResponseEntity<ClienteDto> createNewCliente(ClienteDto clienteDto) {
+        ClienteDto newCliente = clienteService.guardarCliente(clienteDto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newCliente.idCliente())
+                .toUri();
+        return ResponseEntity.created(location).body(newCliente);
     }
 
     @DeleteMapping("/{id}")

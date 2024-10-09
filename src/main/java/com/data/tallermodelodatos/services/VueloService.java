@@ -1,18 +1,16 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.entities.Vuelo;
-
+import com.data.tallermodelodatos.dto.VueloDto;
 import java.util.List;
 import java.util.Optional;
 
 public interface VueloService {
-    Vuelo guardarVuelo(Vuelo vuelo);
-    Optional<Vuelo> buscarVueloPorId(Long id);
-    List<Vuelo> buscarVuelos();
-    List<Vuelo> buscarVuelosPorIds(List<Long> ids);
-    List<Vuelo> buscarVuelosPorOrigen(String origen);
-    List<Vuelo> buscarVuelosPorDestino(String destino);
-    Vuelo actualizarVuelo(Vuelo vuelo);
-    Optional<Vuelo> actualizarVuelo(Long id, Vuelo vuelo);
+    VueloDto guardarVuelo(VueloDto vueloDto);
+    Optional<VueloDto> buscarVueloPorId(Long id);
+    List<VueloDto> buscarVuelos();
+    List<VueloDto> buscarVuelosPorIds(List<Long> ids);
+    List<VueloDto> buscarVuelosPorOrigen(String origen);
+    List<VueloDto> buscarVuelosPorDestino(String destino);
+    Optional<VueloDto> actualizarVuelo(Long id, VueloDto vueloDto);
     void deleteVuelo(Long id);
 }

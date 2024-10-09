@@ -1,70 +1,61 @@
 package com.data.tallermodelodatos.api;
+
 import com.data.tallermodelodatos.dto.ReservaDto;
-import com.data.tallermodelodatos.dto.ReservaMapper;
-import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.services.ReservaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/reservas")
 public class ReservaController {
 
     private final ReservaService reservaService;
-    private final ReservaMapper reservaMapper;
 
-    public ReservaController(ReservaService reservaService, ReservaMapper reservaMapper) {
+    public ReservaController(ReservaService reservaService) {
         this.reservaService = reservaService;
-        this.reservaMapper = reservaMapper;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<ReservaDto>> getAllReservas() {
-        List<ReservaDto> reservasDto = reservaService.buscarReservas().stream()
-                .map(reservaMapper::toDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(reservasDto);
+        return ResponseEntity.ok(reservaService.buscarReservas());
     }
 
-    @GetMapping("/{idReserva}")
-    public ResponseEntity<ReservaDto> getReservaById(@PathVariable("idReserva") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservaDto> getReservaById(@PathVariable Long id) {
         return reservaService.buscarReservaPorId(id)
-                .map(reservaMapper::toDto)
-                .map(reservaDto -> ResponseEntity.ok().body(reservaDto))
-                .orElse(ResponseEntity.notFound().build());
+                .map(reserva -> ResponseEntity.ok().body(reserva))
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
     }
 
-    @PostMapping
-    public ResponseEntity<ReservaDto> createReserva(@RequestBody ReservaDto reservaDto) {
-        Reserva nuevaReserva = reservaMapper.toReserva(reservaDto);
-        Reserva reservaGuardada = reservaService.guardarReserva(nuevaReserva);
-        ReservaDto reservaGuardadaDto = reservaMapper.toDto(reservaGuardada);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(reservaGuardadaDto.idReserva())
-                .toUri();
-        return ResponseEntity.created(location).body(reservaGuardadaDto);
+    @PostMapping()
+    public ResponseEntity<ReservaDto> createReserva(@RequestBody ReservaDto reserva) throws URISyntaxException {
+        return createNewReserva(reserva);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservaDto> updateReserva(@PathVariable Long id, @RequestBody ReservaDto reservaDto) {
-        Reserva reserva = reservaMapper.toReserva(reservaDto);
-        Optional<Reserva> reservaActualizada = reservaService.actualizarReserva(id, reserva);
+    public ResponseEntity<ReservaDto> updateReserva(@PathVariable Long id, @RequestBody ReservaDto newReserva) {
+        Optional<ReservaDto> reservaUpdated = reservaService.actualizarReserva(id, newReserva);
+        return reservaUpdated.map(reserva -> ResponseEntity.ok(reserva))
+                .orElseGet(() -> createNewReserva(newReserva));
+    }
 
-        return reservaActualizada
-                .map(r -> ResponseEntity.ok(reservaMapper.toDto(r)))
-                .orElseGet(() -> createReserva(reservaDto));
+    private ResponseEntity<ReservaDto> createNewReserva(ReservaDto reserva) {
+        ReservaDto newReserva = reservaService.guardarReserva(reserva);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newReserva.idReserva())
+                .toUri();
+        return ResponseEntity.created(location).body(newReserva);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReserva(@PathVariable Long id) {
-        reservaService.deleteReserva(id);
+        reservaService.eliminarReserva(id);
         return ResponseEntity.noContent().build();
     }
 }
-

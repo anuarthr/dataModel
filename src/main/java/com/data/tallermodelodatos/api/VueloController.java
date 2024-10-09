@@ -1,65 +1,59 @@
 package com.data.tallermodelodatos.api;
 
 import com.data.tallermodelodatos.dto.VueloDto;
-import com.data.tallermodelodatos.dto.VueloMapper;
-import com.data.tallermodelodatos.entities.Vuelo;
 import com.data.tallermodelodatos.services.VueloService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/vuelos")
 public class VueloController {
 
     private final VueloService vueloService;
-    private final VueloMapper vueloMapper;
 
-    public VueloController(VueloService vueloService, VueloMapper vueloMapper) {
+    public VueloController(VueloService vueloService) {
         this.vueloService = vueloService;
-        this.vueloMapper = vueloMapper;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<VueloDto>> getAllVuelos() {
-        List<VueloDto> vuelosDto = vueloService.buscarVuelos().stream()
-                .map(vueloMapper::toDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(vuelosDto);
+        return ResponseEntity.ok(vueloService.buscarVuelos());
     }
 
-    @GetMapping("/{idVuelo}")
-    public ResponseEntity<VueloDto> getVueloById(@PathVariable("idVuelo") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<VueloDto> getVueloById(@PathVariable Long id) {
         return vueloService.buscarVueloPorId(id)
-                .map(vueloMapper::toDto)
-                .map(vueloDto -> ResponseEntity.ok().body(vueloDto))
-                .orElse(ResponseEntity.notFound().build());
+                .map(vuelo -> ResponseEntity.ok().body(vuelo))
+                .orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
     }
 
-    @PostMapping
-    public ResponseEntity<VueloDto> createVuelo(@RequestBody VueloDto vueloDto) {
-        Vuelo vuelo = vueloMapper.toVuelo(vueloDto);
-        Vuelo newVuelo = vueloService.guardarVuelo(vuelo);
-        VueloDto newVueloDto = vueloMapper.toDto(newVuelo);
+    @PostMapping()
+    public ResponseEntity<VueloDto> createVuelo(@RequestBody VueloDto vuelo) throws URISyntaxException {
+        VueloDto newVuelo = vueloService.guardarVuelo(vuelo);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(newVueloDto.idVuelo())
+                .buildAndExpand(newVuelo.idVuelo())
                 .toUri();
-        return ResponseEntity.created(location).body(newVueloDto);
+        return ResponseEntity.created(location).body(newVuelo);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VueloDto> updateVuelo(@PathVariable Long id, @RequestBody VueloDto vueloDto) {
-        Vuelo vuelo = vueloMapper.toVuelo(vueloDto);
-        Optional<Vuelo> vueloUpdated = vueloService.actualizarVuelo(id, vuelo);
-
-        return vueloUpdated
-                .map(v -> ResponseEntity.ok(vueloMapper.toDto(v)))
-                .orElseGet(() -> createVuelo(vueloDto));
+    public ResponseEntity<VueloDto> updateVuelo(@PathVariable Long id, @RequestBody VueloDto newVuelo) {
+        Optional<VueloDto> vueloUpdated = vueloService.actualizarVuelo(id, newVuelo);
+        return vueloUpdated.map(ResponseEntity::ok)
+                .orElseGet(() -> {
+                    VueloDto createdVuelo = vueloService.guardarVuelo(newVuelo);
+                    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                            .path("/{id}")
+                            .buildAndExpand(createdVuelo.idVuelo())
+                            .toUri();
+                    return ResponseEntity.created(location).body(createdVuelo);
+                });
     }
 
     @DeleteMapping("/{id}")

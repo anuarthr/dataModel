@@ -1,60 +1,70 @@
 package com.data.tallermodelodatos.services;
 
+import com.data.tallermodelodatos.dto.ClienteDto;
+import com.data.tallermodelodatos.dto.ClienteMapper;
 import com.data.tallermodelodatos.entities.Cliente;
 import com.data.tallermodelodatos.repositories.ClienteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-
 public class ClienteServiceImpl implements ClienteService {
 
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final ClienteMapper clienteMapper;
 
-    public ClienteServiceImpl(ClienteRepository clienteRepository) {
+    public ClienteServiceImpl(ClienteRepository clienteRepository, ClienteMapper clienteMapper) {
         this.clienteRepository = clienteRepository;
+        this.clienteMapper = clienteMapper;
     }
 
     @Override
-    public Cliente guardarCliente(Cliente cliente) {
-        return clienteRepository.save(cliente);
-    }
-    @Override
-    public Optional<Cliente> buscarClientePorId(Long id) {
-        return clienteRepository.findById(id);
+    public ClienteDto guardarCliente(ClienteDto clienteDto) {
+        Cliente cliente = clienteMapper.clienteDtoWithoutIdToCliente(clienteDto);
+        Cliente savedCliente = clienteRepository.save(cliente);
+        return clienteMapper.clienteToClienteDto(savedCliente);
     }
 
     @Override
-    public List<Cliente> buscarClientes() {
-        return clienteRepository.findAll();
+    public Optional<ClienteDto> buscarClientePorId(Long id) {
+        return clienteRepository.findById(id)
+                .map(clienteMapper::clienteToClienteDto);
     }
 
     @Override
-    public List<Cliente> buscarClientesbyIds(List<Long> ids) {
-        return clienteRepository.findByIdIn(ids);
+    public List<ClienteDto> buscarClientes() {
+        return clienteRepository.findAll().stream()
+                .map(clienteMapper::clienteToClienteDtoWithoutId)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Cliente> buscarClientePorNombre(String nombre) {
-        return clienteRepository.findByNombre(nombre);
+    public List<ClienteDto> buscarClientesbyIds(List<Long> ids) {
+        return clienteRepository.findByIdIn(ids).stream()
+                .map(clienteMapper::clienteToClienteDtoWithoutId)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Cliente actualizarCliente(Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public List<ClienteDto> buscarClientePorNombre(String nombre) {
+        return clienteRepository.findByNombre(nombre).stream()
+                .map(clienteMapper::clienteToClienteDtoWithoutId)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Cliente> actualizarCliente(Long id, Cliente cliente) {
+    public Optional<ClienteDto> actualizarCliente(Long id, ClienteDto clienteDto) {
         return clienteRepository.findById(id).map(oldClient -> {
-            oldClient.setNombre(cliente.getNombre());
-            oldClient.setApellido(cliente.getApellido());
-            oldClient.setEmail(cliente.getEmail());
-            oldClient.setDireccion(cliente.getDireccion());
-            oldClient.setTelefono(cliente.getTelefono());
-            return clienteRepository.save(oldClient);
+            oldClient.setNombre(clienteDto.nombre());
+            oldClient.setApellido(clienteDto.apellido());
+            oldClient.setEmail(clienteDto.email());
+            oldClient.setDireccion(clienteDto.direccion());
+            oldClient.setTelefono(clienteDto.telefono());
+            Cliente updatedCliente = clienteRepository.save(oldClient);
+            return clienteMapper.clienteToClienteDto(updatedCliente);
         });
     }
 

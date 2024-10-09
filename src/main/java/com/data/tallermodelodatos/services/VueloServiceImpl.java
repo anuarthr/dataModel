@@ -1,70 +1,80 @@
 package com.data.tallermodelodatos.services;
 
+import com.data.tallermodelodatos.dto.VueloDto;
+import com.data.tallermodelodatos.dto.VueloMapper;
 import com.data.tallermodelodatos.entities.Vuelo;
 import com.data.tallermodelodatos.repositories.VueloRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class VueloServiceImpl implements VueloService {
 
     private final VueloRepository vueloRepository;
+    private final VueloMapper vueloMapper;
 
-    public VueloServiceImpl(VueloRepository vueloRepository) {
+    // Constructor inyectando el vueloMapper
+    public VueloServiceImpl(VueloRepository vueloRepository, VueloMapper vueloMapper) {
         this.vueloRepository = vueloRepository;
+        this.vueloMapper = vueloMapper;
     }
 
     @Override
-    public Vuelo guardarVuelo(Vuelo vuelo) {
-        return vueloRepository.save(vuelo);
+    public List<VueloDto> buscarVuelos() {
+        return vueloRepository.findAll().stream()
+                .map(vueloMapper::vueloToVueloDto)
+                .toList();
     }
 
     @Override
-    public Optional<Vuelo> buscarVueloPorId(Long id) {
-        return vueloRepository.findById(id);
+    public Optional<VueloDto> buscarVueloPorId(Long id) {
+        return vueloRepository.findById(id)
+                .map(vueloMapper::vueloToVueloDto);
     }
 
     @Override
-    public List<Vuelo> buscarVuelos() {
-        return vueloRepository.findAll();
+    public VueloDto guardarVuelo(VueloDto vueloDto) {
+        Vuelo vuelo = vueloMapper.vueloDtoToVuelo(vueloDto);
+        Vuelo vueloGuardado = vueloRepository.save(vuelo);
+        return vueloMapper.vueloToVueloDto(vueloGuardado);
     }
 
     @Override
-    public List<Vuelo> buscarVuelosPorIds(List<Long> ids) {
-        return vueloRepository.findAllById(ids);
-    }
-
-    @Override
-    public List<Vuelo> buscarVuelosPorOrigen(String origen) {
-        return vueloRepository.findByOrigen(origen);
-    }
-
-    @Override
-    public List<Vuelo> buscarVuelosPorDestino(String destino) {
-        return vueloRepository.findByDestino(destino);
-    }
-
-    @Override
-    public Vuelo actualizarVuelo(Vuelo vuelo) {
-        return vueloRepository.save(vuelo);
-    }
-
-    @Override
-    public Optional<Vuelo> actualizarVuelo(Long id, Vuelo vuelo) {
-        return vueloRepository.findById(id).map(oldVuelo -> {
-            oldVuelo.setOrigen(vuelo.getOrigen());
-            oldVuelo.setDestino(vuelo.getDestino());
-            oldVuelo.setFechaDeSalida(vuelo.getFechaDeSalida());
-            oldVuelo.setHoraDeSalida(vuelo.getHoraDeSalida());
-            oldVuelo.setDuracion(vuelo.getDuracion());
-            oldVuelo.setCapacidad(vuelo.getCapacidad());
-            oldVuelo.setAerolinea(vuelo.getAerolinea());
-            oldVuelo.setAeropuerto(vuelo.getAeropuerto());
-            return vueloRepository.save(oldVuelo);
+    public Optional<VueloDto> actualizarVuelo(Long id, VueloDto vueloToUpdateDto) {
+        return vueloRepository.findById(id).map(vuelo -> {
+            Vuelo updatedVuelo = vueloMapper.vueloDtoToVuelo(vueloToUpdateDto);
+            vuelo.setOrigen(updatedVuelo.getOrigen());
+            vuelo.setDestino(updatedVuelo.getDestino());
+            vuelo.setFechaDeSalida(updatedVuelo.getFechaDeSalida());
+            vuelo.setHoraDeSalida(updatedVuelo.getHoraDeSalida());
+            vuelo.setDuracion(updatedVuelo.getDuracion());
+            vuelo.setCapacidad(updatedVuelo.getCapacidad());
+            vuelo.setReservas(updatedVuelo.getReservas());
+            Vuelo vueloGuardado = vueloRepository.save(vuelo);
+            return vueloMapper.vueloToVueloDto(vueloGuardado);
         });
+    }
+
+    @Override
+    public List<VueloDto> buscarVuelosPorIds(List<Long> ids) {
+        return vueloRepository.findAllById(ids).stream()
+                .map(vueloMapper::vueloToVueloDto)
+                .toList();
+    }
+
+    @Override
+    public List<VueloDto> buscarVuelosPorOrigen(String origen) {
+        return vueloRepository.findByOrigen(origen).stream()
+                .map(vueloMapper::vueloToVueloDto)
+                .toList();
+    }
+
+    @Override
+    public List<VueloDto> buscarVuelosPorDestino(String destino) {
+        return vueloRepository.findByDestino(destino).stream()
+                .map(vueloMapper::vueloToVueloDto)
+                .toList();
     }
 
     @Override

@@ -1,16 +1,15 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.entities.Reserva;
+import com.data.tallermodelodatos.dto.ReservaDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ReservaService {
-    Reserva guardarReserva(Reserva reserva);
-    Optional<Reserva> buscarReservaPorId(Long id);
-    List<Reserva> buscarReservas();
-    List<Reserva> buscarReservasPorCliente(Long clienteId);
-    Reserva actualizarReserva(Reserva reserva);
-    Optional<Reserva> actualizarReserva(Long id, Reserva reserva);
-    void deleteReserva(Long id);
+    ReservaDto guardarReserva(ReservaDto reservaDto);
+    Optional<ReservaDto> buscarReservaPorId(Long id);
+    List<ReservaDto> buscarReservas();
+    List<ReservaDto> buscarReservasPorCliente(Long clienteId);
+    Optional<ReservaDto> actualizarReserva(Long id, ReservaDto reservaDto);
+    void eliminarReserva(Long id);
 }
