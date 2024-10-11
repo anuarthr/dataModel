@@ -41,7 +41,7 @@ public class AeropuertoController {
 
     @PutMapping("/id")
     public ResponseEntity<Aeropuerto> actualizarAeropuerto(@PathVariable Long id, @RequestBody Aeropuerto nuevoAeropuerto) throws URISyntaxException {
-        Optional<Aeropuerto> aeropuertoUpdate = aeropuertoService.actualizarAeropuerto(id, nuevoAeropuerto);
+        Optional<Aeropuerto> aeropuertoUpdate = aeropuertoService.actualizarAeropuerto(nuevoAeropuerto,id);
         return aeropuertoUpdate.map(aeropuerto -> ResponseEntity.ok(aeropuerto))
                 .orElseGet(() -> {
                     return crearNuevoAeropuerto(nuevoAeropuerto);

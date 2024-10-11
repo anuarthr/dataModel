@@ -13,10 +13,8 @@ import java.util.Optional;
 @Service
 
 public class AerolineaServiceImpl implements AerolineaService {
-    
-    private AerolineaRepository aerolineaRepository;
-
     @Autowired
+    private AerolineaRepository aerolineaRepository;
     private final AerolineaMapper aerolineaMapper;
     public AerolineaServiceImpl(AerolineaRepository aerolineaRepository, AerolineaMapper aerolineaMapper) {
         this.aerolineaRepository = aerolineaRepository;
@@ -55,7 +53,7 @@ public class AerolineaServiceImpl implements AerolineaService {
     @Override
     public Optional<AerolineaDto> buscarAerolineaPorCodigo(Long codigo) {
         return aerolineaRepository.findByCodigoAerolinea(codigo)
-                .map(aerolinea -> aerolineaMapper.aerolineaToAerolineaDto(aerolinea));
+                .map(aerolinea -> aerolineaMapper.aerolineaToAerolineaDTO(aerolinea));
     }
 
 

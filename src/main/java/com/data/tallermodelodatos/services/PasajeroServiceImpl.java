@@ -1,9 +1,13 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.entities.Pasajero;
+import com.data.tallermodelodatos.dto.PasajeroDto;
+import com.data.tallermodelodatos.dto.PasajeroMapper;
+import com.data.tallermodelodatos.dto.PasajeroDto;
 import com.data.tallermodelodatos.repositories.PasajeroRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,48 +15,72 @@ import java.util.Optional;
 
 public class PasajeroServiceImpl implements PasajeroService{
 
+    @Autowired
     private PasajeroRepository pasajeroRepository;
+    private final PasajeroMapper pasajeroMapper;
 
-    public PasajeroServiceImpl(PasajeroRepository pasajeroRepository) {
+    public PasajeroServiceImpl(PasajeroRepository pasajeroRepository, PasajeroMapper pasajeroMapper) {
         this.pasajeroRepository = pasajeroRepository;
+        this.pasajeroMapper = pasajeroMapper;
     }
 
     @Override
-    public Pasajero guardarPasajero(Pasajero pasajero) {return pasajeroRepository.save(pasajero);}
+    public PasajeroDto guardarPasajero(PasajeroDto pasajero) {
+        return pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajeroRepository.save(pasajeroMapper.pasajeroDTOWithoutIdToPasajero(pasajero)));}
 
     @Override
-    public Optional<Pasajero> buscarPasajeroPorId(Long id) {return pasajeroRepository.findById(id);}
+    public Optional<PasajeroDto> buscarPasajeroPorId(Long id) {
+        return pasajeroRepository.findById(id).map(
+                pasajero -> pasajeroMapper.pasajeroToPasajeroDTO(pasajero));}
 
     @Override
-    public List<Pasajero> buscarPasajeros() {return pasajeroRepository.findAll();}
+    public List<PasajeroDto> buscarPasajeros() {
+        List<PasajeroDto> pasajeros = new ArrayList<>();
+        pasajeroRepository.findAll().forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        return pasajeros;}
 
     @Override
-    public List<Pasajero> buscarPasajerosPorNombre(String nombre) {return pasajeroRepository.findByNombre(nombre);}
+    public List<PasajeroDto> buscarPasajerosPorNombre(String nombre) {
+        List<PasajeroDto> pasajeros = new ArrayList<>();
+        pasajeroRepository.findAllByNombre(nombre).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        return pasajeros;
+
+    }
 
     @Override
-    public List<Pasajero> buscarPasajerosPorIds(List<Long> ids) {return pasajeroRepository.findByIdIn(ids);}
+    public List<PasajeroDto> buscarPasajerosPorIds(List<Long> ids) {
+        List<PasajeroDto> pasajeros = new ArrayList<>();
+        pasajeroRepository.findByIdIn(ids).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        return pasajeros;
+    }
 
     @Override
-    public List<Pasajero> buscarPasajerosPorApellido(String apellido) {return pasajeroRepository.findByApellido(apellido);}
+    public List<PasajeroDto> buscarPasajerosPorApellido(String apellido) {
+        List<PasajeroDto> pasajeros = new ArrayList<>();
+        pasajeroRepository.findAllByApellido(apellido).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        return pasajeros;}
 
     @Override
-    public Pasajero buscarPasajeroPorPasaporte(Long pasaporte) {return pasajeroRepository.findByPasaporte(pasaporte);}
+    public Optional<PasajeroDto> buscarPasajeroPorPasaporte(Long pasaporte) {
+        return pasajeroRepository.findByPasaporteIn(pasaporte).map(pasajero -> pasajeroMapper.pasajeroToPasajeroDTO(pasajero));
+    }
 
     @Override
-    public List<Pasajero> buscarPasajerosPorNacionalidad(String nacionalidad) {return pasajeroRepository.findByNacionalidad(nacionalidad);}
+    public List<PasajeroDto> buscarPasajerosPorNacionalidad(String nacionalidad) {
+        List<PasajeroDto> pasajeros = new ArrayList<>();
+        pasajeroRepository.findAllByNacionalidad(nacionalidad).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        return pasajeros;
+    }
 
     @Override
-    public Pasajero actualizarPasajero(Pasajero pasajero) {return pasajeroRepository.save(pasajero);}
-
-    @Override
-    public Optional<Pasajero> actualizarPasajero(Long id, Pasajero pasajero) {
+    public Optional<PasajeroDto> actualizarPasajero(Long id, PasajeroDto pasajero) {
         return pasajeroRepository.findById(id).map(oldPasajero -> {
-            oldPasajero.setNombre(pasajero.getNombre());
-            oldPasajero.setApellido(pasajero.getApellido());
-            oldPasajero.setPasaporte(pasajero.getPasaporte());
-            oldPasajero.setNacionalidad(pasajero.getNacionalidad());
-            oldPasajero.setReserva(pasajero.getReserva());
-            return pasajeroRepository.save(oldPasajero);
+            oldPasajero.setNombre(pasajero.nombre());
+            oldPasajero.setApellido(pasajero.apellido());
+            oldPasajero.setNacionalidad(pasajero.nacionalidad());
+            oldPasajero.setPasaporte(pasajero.pasaporte());
+            oldPasajero.setNacionalidad(pasajero.nacionalidad());
+            return pasajeroMapper.pasajeroToPasajeroDTO(pasajeroRepository.save(oldPasajero));
         });
     }
 

@@ -1,5 +1,6 @@
 package com.data.tallermodelodatos.api;
 
+import com.data.tallermodelodatos.dto.PasajeroDto;
 import com.data.tallermodelodatos.entities.Pasajero;
 import com.data.tallermodelodatos.services.PasajeroService;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +55,8 @@ public class PasajeroController {
         return ResponseEntity.noContent().build();
     }
 
-    private ResponseEntity<Pasajero> crearNuevoPasajero(Pasajero pasajero) {
-        Pasajero nuevoPasajero = pasajeroService.guardarPasajero(pasajero);
+    private ResponseEntity<PasajeroDto> crearNuevoPasajero(PasajeroDto pasajero) {
+        PasajeroDto nuevoPasajero = pasajeroService.guardarPasajero(pasajero);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(nuevoPasajero.getIdPasajero())
