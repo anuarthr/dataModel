@@ -1,7 +1,6 @@
 package com.data.tallermodelodatos.api;
 
 import com.data.tallermodelodatos.dto.PasajeroDto;
-import com.data.tallermodelodatos.entities.Pasajero;
 import com.data.tallermodelodatos.services.PasajeroService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/pasajero")
+@RequestMapping("/api/v1/pasajeros")
 public class PasajeroController {
 
     private final PasajeroService pasajeroService;
@@ -24,25 +23,25 @@ public class PasajeroController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Pasajero>> getAllPasajeros() {
+    public ResponseEntity<List<PasajeroDto>> getAllPasajeros() {
         return ResponseEntity.ok(pasajeroService.buscarPasajeros());
     }
 
     @GetMapping("/id")
-    public ResponseEntity<Pasajero> getPasajeroById(@PathVariable Long id) {
+    public ResponseEntity<PasajeroDto> getPasajeroById(@PathVariable Long id) {
         return pasajeroService.buscarPasajeroPorId(id)
                 .map(pasajero -> ResponseEntity.ok().body(pasajero))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Pasajero> createPasajero(@RequestBody Pasajero pasajero) throws URISyntaxException {
+    public ResponseEntity<PasajeroDto> createPasajero(@RequestBody PasajeroDto pasajero) throws URISyntaxException {
         return crearNuevoPasajero(pasajero);
     }
 
     @PutMapping("/id")
-    public ResponseEntity<Pasajero> actualizarPasajero(@PathVariable Long id, @RequestBody Pasajero nuevoPasajero) {
-        Optional<Pasajero> pasajeroUpdate = pasajeroService.actualizarPasajero(id, nuevoPasajero);
+    public ResponseEntity<PasajeroDto> actualizarPasajero(@PathVariable Long id, @RequestBody PasajeroDto nuevoPasajero) {
+        Optional<PasajeroDto> pasajeroUpdate = pasajeroService.actualizarPasajero(id, nuevoPasajero);
         return pasajeroUpdate.map(pasajero -> ResponseEntity.ok(pasajero))
                 .orElseGet(() -> {
                     return crearNuevoPasajero(nuevoPasajero);
@@ -59,7 +58,7 @@ public class PasajeroController {
         PasajeroDto nuevoPasajero = pasajeroService.guardarPasajero(pasajero);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(nuevoPasajero.getIdPasajero())
+                .buildAndExpand(nuevoPasajero.idPasajero())
                 .toUri();
         return ResponseEntity.created(location).body(nuevoPasajero);
     }

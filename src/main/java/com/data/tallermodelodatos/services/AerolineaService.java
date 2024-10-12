@@ -15,7 +15,6 @@ public interface AerolineaService {
     List<AerolineaDto> buscarAerolineasPorIds(List<Long> ids);
     Optional<AerolineaDto> buscarAerolineaPorCodigo(Long codigo);
     List<AerolineaDto> buscarAerolineasPorPaisDeOrigen(String paisDeOrigen);
-    AerolineaDto actualizarAerolinea(AerolineaDto aerolinea);
     Optional<AerolineaDto> actualizarAerolinea(Long id, AerolineaDto aerolinea);
     void eliminarAerolinea(Long id);
 }

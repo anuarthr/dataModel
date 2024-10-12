@@ -4,5 +4,5 @@ import com.data.tallermodelodatos.entities.Vuelo;
 
 import java.util.List;
 
-public record AeropuertoDto(Long idAeropuerto, String nombre, String ciudad, String pais, List<VueloDto> vuelos) {
+public record AeropuertoDto(Long idAeropuerto, String nombre, String ciudad, String pais) {
 }

@@ -17,7 +17,6 @@ public interface PasajeroService {
     List<PasajeroDto> buscarPasajerosPorApellido(String apellido);
     Optional<PasajeroDto> buscarPasajeroPorPasaporte(Long pasaporte);
     List<PasajeroDto> buscarPasajerosPorNacionalidad(String nacionalidad);
-    PasajeroDto actualizarPasajero(PasajeroDto pasajero);
     Optional<PasajeroDto> actualizarPasajero(Long id, PasajeroDto pasajero);
     void eliminarPasajero(Long id);
 }
