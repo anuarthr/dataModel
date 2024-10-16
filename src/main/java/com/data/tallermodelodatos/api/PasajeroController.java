@@ -5,7 +5,6 @@ import com.data.tallermodelodatos.services.PasajeroService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/pasajeros")
+
 public class PasajeroController {
 
     private final PasajeroService pasajeroService;

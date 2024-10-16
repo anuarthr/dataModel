@@ -1,7 +1,5 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.entities.Aerolinea;
-import com.data.tallermodelodatos.entities.Aeropuerto;
 import com.data.tallermodelodatos.dto.PasajeroDto;
 import org.springframework.stereotype.Service;
 

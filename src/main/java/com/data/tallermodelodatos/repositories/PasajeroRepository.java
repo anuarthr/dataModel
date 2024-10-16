@@ -2,7 +2,6 @@ package com.data.tallermodelodatos.repositories;
 
 import com.data.tallermodelodatos.entities.Pasajero;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
 

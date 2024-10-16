@@ -14,7 +14,6 @@ public class VueloServiceImpl implements VueloService {
     private final VueloRepository vueloRepository;
     private final VueloMapper vueloMapper;
 
-    // Constructor inyectando el vueloMapper
     public VueloServiceImpl(VueloRepository vueloRepository, VueloMapper vueloMapper) {
         this.vueloRepository = vueloRepository;
         this.vueloMapper = vueloMapper;

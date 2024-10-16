@@ -2,7 +2,6 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.dto.PasajeroDto;
 import com.data.tallermodelodatos.dto.PasajeroMapper;
-import com.data.tallermodelodatos.dto.PasajeroDto;
 import com.data.tallermodelodatos.repositories.PasajeroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

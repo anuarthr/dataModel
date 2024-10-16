@@ -2,11 +2,9 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.dto.AerolineaMapper;
 import com.data.tallermodelodatos.dto.AerolineaDto;
-import com.data.tallermodelodatos.entities.Aerolinea;
 import com.data.tallermodelodatos.repositories.AerolineaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -9,6 +9,7 @@ public class ErrorMessage {
     private String status;
     private String message;
     private LocalDateTime timestamp;
-
-
+    
+    public ErrorMessage(int value, String message, LocalDateTime now) {
+    }
 }
