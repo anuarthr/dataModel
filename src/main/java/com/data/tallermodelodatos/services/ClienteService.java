@@ -1,17 +1,15 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.entities.Cliente;
-
+import com.data.tallermodelodatos.dto.ClienteDto;
 import java.util.List;
 import java.util.Optional;
 
 public interface ClienteService {
-     Cliente guardarCliente(Cliente cliente);
-     Optional<Cliente> buscarClientePorId(Long id);
-     List<Cliente> buscarClientes();
-     List<Cliente> buscarClientesbyIds(List<Long> ids);
-     List<Cliente> buscarClientePorNombre(String nombre);
-     Cliente actualizarCliente(Cliente cliente);
-     Optional<Cliente> actualizarCliente(Long id, Cliente cliente);
+     ClienteDto guardarCliente(ClienteDto clienteDto);
+     Optional<ClienteDto> buscarClientePorId(Long id);
+     List<ClienteDto> buscarClientes();
+     List<ClienteDto> buscarClientesbyIds(List<Long> ids);
+     List<ClienteDto> buscarClientePorNombre(String nombre);
+     Optional<ClienteDto> actualizarCliente(Long id, ClienteDto clienteDto);
      void deleteCliente(Long id);
 }

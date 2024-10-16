@@ -28,7 +28,6 @@ public class ClienteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDto> getClienteById(@PathVariable Long id) {
-        // Convertimos la entidad Cliente a DTO si se encuentra
         return clienteService.buscarClientePorId(id)
                 .map(clienteDto -> ResponseEntity.ok().body(clienteDto))
                 .orElseThrow(ClientNotFoundException::new);
