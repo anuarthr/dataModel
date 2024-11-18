@@ -5,9 +5,8 @@ import com.data.tallermodelodatos.entities.Vuelo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ReservaMapper.class})
+@Mapper(componentModel = "spring")
 public interface VueloMapper {
     VueloMapper INSTANCE = Mappers.getMapper(VueloMapper.class);
     Vuelo vueloDtoToVuelo(VueloDto vueloDto);

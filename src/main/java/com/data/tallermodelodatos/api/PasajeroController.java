@@ -1,6 +1,7 @@
 package com.data.tallermodelodatos.api;
 
 import com.data.tallermodelodatos.dto.PasajeroDto;
+import com.data.tallermodelodatos.exception.PasajeroNotFoundException;
 import com.data.tallermodelodatos.services.PasajeroService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class PasajeroController {
     public ResponseEntity<PasajeroDto> getPasajeroById(@PathVariable Long id) {
         return pasajeroService.buscarPasajeroPorId(id)
                 .map(pasajero -> ResponseEntity.ok().body(pasajero))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(PasajeroNotFoundException::new);
     }
 
     @PostMapping
@@ -39,7 +40,7 @@ public class PasajeroController {
         return crearNuevoPasajero(pasajero);
     }
 
-    @PutMapping("/id")
+    @PutMapping("/{id}")
     public ResponseEntity<PasajeroDto> actualizarPasajero(@PathVariable Long id, @RequestBody PasajeroDto nuevoPasajero) {
         Optional<PasajeroDto> pasajeroUpdate = pasajeroService.actualizarPasajero(id, nuevoPasajero);
         return pasajeroUpdate.map(pasajero -> ResponseEntity.ok(pasajero))
@@ -48,7 +49,7 @@ public class PasajeroController {
                 });
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePasajero(@PathVariable Long id) {
         pasajeroService.eliminarPasajero(id);
         return ResponseEntity.noContent().build();

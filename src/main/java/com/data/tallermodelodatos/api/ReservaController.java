@@ -1,6 +1,8 @@
 package com.data.tallermodelodatos.api;
 
 import com.data.tallermodelodatos.dto.ReservaDto;
+import com.data.tallermodelodatos.exception.PasajeroNotFoundException;
+import com.data.tallermodelodatos.exception.ReservaNotFoundException;
 import com.data.tallermodelodatos.services.ReservaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/reservas")
-
 public class ReservaController {
 
     private final ReservaService reservaService;
@@ -30,7 +31,7 @@ public class ReservaController {
     public ResponseEntity<ReservaDto> getReservaById(@PathVariable Long id) {
         return reservaService.buscarReservaPorId(id)
                 .map(reserva -> ResponseEntity.ok().body(reserva))
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+                .orElseThrow(ReservaNotFoundException::new);
     }
 
     @PostMapping()

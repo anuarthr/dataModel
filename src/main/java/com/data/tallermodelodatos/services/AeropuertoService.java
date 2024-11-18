@@ -14,6 +14,6 @@ public interface AeropuertoService {
     List<AeropuertoDto> buscarAeropuertosPorIds(List<Long> ids);
     List<AeropuertoDto> buscarAeropuertosPorCiudad(String ciudad);
     List<AeropuertoDto> buscarAeropuertosPorPais(String pais);
-    Optional<AeropuertoDto> actualizarAeropuerto(AeropuertoDto aeropuerto,Long id);
+    Optional<AeropuertoDto> actualizarAeropuerto(Long id,AeropuertoDto aeropuerto);
     void eliminarAeropuerto(Long id);
 }

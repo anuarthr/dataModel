@@ -1,6 +1,7 @@
 package com.data.tallermodelodatos.api;
 
 import com.data.tallermodelodatos.dto.VueloDto;
+import com.data.tallermodelodatos.exception.VueloNotFoundException;
 import com.data.tallermodelodatos.services.VueloService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class VueloController {
     public ResponseEntity<VueloDto> getVueloById(@PathVariable Long id) {
         return vueloService.buscarVueloPorId(id)
                 .map(vuelo -> ResponseEntity.ok().body(vuelo))
-                .orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
+                .orElseThrow(VueloNotFoundException::new);
     }
 
     @PostMapping()

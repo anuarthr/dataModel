@@ -65,7 +65,7 @@ public class AeropuertoServiceImpl implements AeropuertoService{
     }
 
     @Override
-    public Optional<AeropuertoDto> actualizarAeropuerto(AeropuertoDto aeropuerto, Long id) {
+    public Optional<AeropuertoDto> actualizarAeropuerto(Long id,AeropuertoDto aeropuerto) {
         return aeropuertoRepository.findById(id).map(oldAeropuerto -> {
             oldAeropuerto.setNombre(aeropuerto.nombre());
             oldAeropuerto.setCiudad(aeropuerto.ciudad());

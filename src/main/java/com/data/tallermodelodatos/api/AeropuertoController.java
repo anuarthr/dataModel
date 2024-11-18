@@ -1,6 +1,7 @@
 package com.data.tallermodelodatos.api;
 
 import com.data.tallermodelodatos.dto.AeropuertoDto;
+import com.data.tallermodelodatos.exception.AerolineaNotFoundException;
 import com.data.tallermodelodatos.services.AeropuertoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class AeropuertoController {
     public ResponseEntity<AeropuertoDto> getAeropuertoById(@PathVariable Long id) {
         return aeropuertoService.buscarAeropuertoPorId(id)
                 .map(aeropuerto -> ResponseEntity.ok().body(aeropuerto))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(AerolineaNotFoundException::new);
     }
 
     @PostMapping
@@ -41,7 +42,7 @@ public class AeropuertoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AeropuertoDto> actualizarAeropuerto(@PathVariable Long id, @RequestBody AeropuertoDto nuevoAeropuerto) throws URISyntaxException {
-        Optional<AeropuertoDto> aeropuertoUpdate = aeropuertoService.actualizarAeropuerto(nuevoAeropuerto,id);
+        Optional<AeropuertoDto> aeropuertoUpdate = aeropuertoService.actualizarAeropuerto(id,nuevoAeropuerto);
         return aeropuertoUpdate.map(aeropuerto -> ResponseEntity.ok(aeropuerto))
                 .orElseGet(() -> {
                     return crearNuevoAeropuerto(nuevoAeropuerto);
