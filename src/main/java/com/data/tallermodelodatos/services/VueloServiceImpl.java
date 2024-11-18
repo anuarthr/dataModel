@@ -49,7 +49,6 @@ public class VueloServiceImpl implements VueloService {
             vuelo.setHoraDeSalida(updatedVuelo.getHoraDeSalida());
             vuelo.setDuracion(updatedVuelo.getDuracion());
             vuelo.setCapacidad(updatedVuelo.getCapacidad());
-            vuelo.setReservas(updatedVuelo.getReservas());
             Vuelo vueloGuardado = vueloRepository.save(vuelo);
             return vueloMapper.vueloToVueloDto(vueloGuardado);
         });

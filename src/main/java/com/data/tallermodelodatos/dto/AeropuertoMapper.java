@@ -8,10 +8,10 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface AeropuertoMapper {
     AeropuertoMapper INSTANCE = Mappers.getMapper(AeropuertoMapper.class);
-    Aeropuerto aeropuertoDTOToAeropuerto(AeropuertoDto aeropuertoDto);
-    @Mapping(target = "id", ignore = true)
-    Aeropuerto aeropuertoDTOWithoutIdToAeropuerto(AeropuertoDto aeropuertoDto);
+    Aeropuerto aeropuertoDtoToAeropuerto(AeropuertoDto aeropuertoDto);
+    @Mapping(target = "idAeropuerto", ignore = true)
+    Aeropuerto aeropuertoDtoWithoutIdToAeropuerto(AeropuertoDto aeropuertoDto);
     AeropuertoDto aeropuertoToAeropuertoDto(Aeropuerto aeropuerto);
-    @Mapping(target = "id", ignore = true)
-    AeropuertoDto aeropuertoToAeropuertoDTOWithoutId(Aeropuerto aeropuerto);
+    @Mapping(target = "idAeropuerto", ignore = true)
+    AeropuertoDto aeropuertoToAeropuertoDtoWithoutId(Aeropuerto aeropuerto);
 }

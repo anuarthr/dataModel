@@ -9,10 +9,9 @@ import org.mapstruct.factory.Mappers;
 public interface ClienteMapper {
     ClienteMapper INSTANCE = Mappers.getMapper( ClienteMapper.class );
     Cliente clienteDtoToCliente(ClienteDto clienteDto);
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "idCliente", ignore = true)
     Cliente clienteDtoWithoutIdToCliente(ClienteDto clienteDto);
     ClienteDto clienteToClienteDto(Cliente cliente);
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "idCliente", ignore = true)
     ClienteDto clienteToClienteDtoWithoutId(Cliente cliente);
-
 }

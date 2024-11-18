@@ -27,7 +27,7 @@ public class PasajeroController {
         return ResponseEntity.ok(pasajeroService.buscarPasajeros());
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<PasajeroDto> getPasajeroById(@PathVariable Long id) {
         return pasajeroService.buscarPasajeroPorId(id)
                 .map(pasajero -> ResponseEntity.ok().body(pasajero))

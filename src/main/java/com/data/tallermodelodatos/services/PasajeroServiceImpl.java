@@ -25,23 +25,23 @@ public class PasajeroServiceImpl implements PasajeroService{
 
     @Override
     public PasajeroDto guardarPasajero(PasajeroDto pasajero) {
-        return pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajeroRepository.save(pasajeroMapper.pasajeroDTOWithoutIdToPasajero(pasajero)));}
+        return pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajeroRepository.save(pasajeroMapper.pasajeroDtoWithoutIdToPasajero(pasajero)));}
 
     @Override
     public Optional<PasajeroDto> buscarPasajeroPorId(Long id) {
         return pasajeroRepository.findById(id).map(
-                pasajero -> pasajeroMapper.pasajeroToPasajeroDTO(pasajero));}
+                pasajero -> pasajeroMapper.pasajeroToPasajeroDto(pasajero));}
 
     @Override
     public List<PasajeroDto> buscarPasajeros() {
         List<PasajeroDto> pasajeros = new ArrayList<>();
-        pasajeroRepository.findAll().forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        pasajeroRepository.findAll().forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
         return pasajeros;}
 
     @Override
     public List<PasajeroDto> buscarPasajerosPorNombre(String nombre) {
         List<PasajeroDto> pasajeros = new ArrayList<>();
-        pasajeroRepository.findAllByNombre(nombre).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        pasajeroRepository.findAllByNombre(nombre).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
         return pasajeros;
 
     }
@@ -49,25 +49,25 @@ public class PasajeroServiceImpl implements PasajeroService{
     @Override
     public List<PasajeroDto> buscarPasajerosPorIds(List<Long> ids) {
         List<PasajeroDto> pasajeros = new ArrayList<>();
-        pasajeroRepository.findByIdIn(ids).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        pasajeroRepository.findByIdIn(ids).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
         return pasajeros;
     }
 
     @Override
     public List<PasajeroDto> buscarPasajerosPorApellido(String apellido) {
         List<PasajeroDto> pasajeros = new ArrayList<>();
-        pasajeroRepository.findAllByApellido(apellido).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        pasajeroRepository.findAllByApellido(apellido).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
         return pasajeros;}
 
     @Override
     public Optional<PasajeroDto> buscarPasajeroPorPasaporte(Long pasaporte) {
-        return pasajeroRepository.findByPasaporteIn(pasaporte).map(pasajero -> pasajeroMapper.pasajeroToPasajeroDTO(pasajero));
+        return pasajeroRepository.findByPasaporteIn(pasaporte).map(pasajero -> pasajeroMapper.pasajeroToPasajeroDto(pasajero));
     }
 
     @Override
     public List<PasajeroDto> buscarPasajerosPorNacionalidad(String nacionalidad) {
         List<PasajeroDto> pasajeros = new ArrayList<>();
-        pasajeroRepository.findAllByNacionalidad(nacionalidad).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDTOWithoutId(pasajero)));
+        pasajeroRepository.findAllByNacionalidad(nacionalidad).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
         return pasajeros;
     }
 
@@ -79,7 +79,7 @@ public class PasajeroServiceImpl implements PasajeroService{
             oldPasajero.setNacionalidad(pasajero.nacionalidad());
             oldPasajero.setPasaporte(pasajero.pasaporte());
             oldPasajero.setNacionalidad(pasajero.nacionalidad());
-            return pasajeroMapper.pasajeroToPasajeroDTO(pasajeroRepository.save(oldPasajero));
+            return pasajeroMapper.pasajeroToPasajeroDto(pasajeroRepository.save(oldPasajero));
         });
     }
 

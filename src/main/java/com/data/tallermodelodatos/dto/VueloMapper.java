@@ -11,11 +11,9 @@ import java.util.List;
 public interface VueloMapper {
     VueloMapper INSTANCE = Mappers.getMapper(VueloMapper.class);
     Vuelo vueloDtoToVuelo(VueloDto vueloDto);
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "idVuelo", ignore = true)
     Vuelo vueloDtoWithoutIdToVuelo(VueloDto vueloDto);
     VueloDto vueloToVueloDto(Vuelo vuelo);
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "idVuelo", ignore = true)
     VueloDto vueloToVueloDtoWithoutId(Vuelo vuelo);
-    List<Reserva> reservaDtosToReservas(List<ReservaDto> reservaDtos);
-    List<ReservaDto> reservasToReservaDtos(List<Reserva> reservas);
 }

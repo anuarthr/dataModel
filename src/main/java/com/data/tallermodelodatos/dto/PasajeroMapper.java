@@ -8,10 +8,10 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface PasajeroMapper {
     PasajeroMapper INSTANCE = Mappers.getMapper( PasajeroMapper.class );
-    Pasajero pasajeroDTOToPasajero(PasajeroDto pasajeroDto);
-    @Mapping(target = "id", ignore = true)
-    Pasajero pasajeroDTOWithoutIdToPasajero(PasajeroDto pasajeroDto);
-    PasajeroDto pasajeroToPasajeroDTO(Pasajero pasajero);
-    @Mapping(target = "id", ignore = true)
-    PasajeroDto pasajeroToPasajeroDTOWithoutId(Pasajero pasajero);
+    Pasajero pasajeroDtoToPasajero(PasajeroDto pasajeroDto);
+    @Mapping(target = "idPasajero", ignore = true)
+    Pasajero pasajeroDtoWithoutIdToPasajero(PasajeroDto pasajeroDto);
+    PasajeroDto pasajeroToPasajeroDto(Pasajero pasajero);
+    @Mapping(target = "idPasajero", ignore = true)
+    PasajeroDto pasajeroToPasajeroDtoWithoutId(Pasajero pasajero);
 }

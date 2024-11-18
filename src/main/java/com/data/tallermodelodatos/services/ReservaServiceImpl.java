@@ -1,7 +1,9 @@
 package com.data.tallermodelodatos.services;
 
+import com.data.tallermodelodatos.dto.ClienteMapper;
 import com.data.tallermodelodatos.dto.ReservaDto;
 import com.data.tallermodelodatos.dto.ReservaMapper;
+import com.data.tallermodelodatos.dto.VueloMapper;
 import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.repositories.ReservaRepository;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,14 @@ import java.util.stream.Collectors;
 public class ReservaServiceImpl implements ReservaService {
     private final ReservaRepository reservaRepository;
     private final ReservaMapper reservaMapper;
+    private final ClienteMapper clienteMapper;
+    private final VueloMapper vueloMapper;
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, ReservaMapper reservaMapper) {
+    public ReservaServiceImpl(ReservaRepository reservaRepository, ReservaMapper reservaMapper, ClienteMapper clienteMapper, VueloMapper vueloMapper) {
         this.reservaRepository = reservaRepository;
         this.reservaMapper = reservaMapper;
+        this.clienteMapper = clienteMapper;
+        this.vueloMapper = vueloMapper;
     }
 
     @Override
@@ -50,8 +56,8 @@ public class ReservaServiceImpl implements ReservaService {
     public Optional<ReservaDto> actualizarReserva(Long id, ReservaDto reservaDto) {
         return reservaRepository.findById(id).map(oldReserva -> {
             oldReserva.setFechaDeReserva(reservaDto.fechaDeReserva());
-            oldReserva.setVuelos(reservaMapper.vueloDtosToVuelos(reservaDto.vuelos()));
-            oldReserva.setCliente(reservaMapper.clienteDtoToCliente(reservaDto.cliente()));
+            oldReserva.setVuelos(reservaDto.vuelos().stream().map(vuelo -> vueloMapper.vueloDtoToVuelo(vuelo)).toList());
+            oldReserva.setCliente(clienteMapper.clienteDtoToCliente(reservaDto.cliente()));
             oldReserva.setNumeroDePasajeros(reservaDto.numeroDePasajeros());
             Reserva updatedReserva = reservaRepository.save(oldReserva);
             return reservaMapper.reservaToReservaDto(updatedReserva);

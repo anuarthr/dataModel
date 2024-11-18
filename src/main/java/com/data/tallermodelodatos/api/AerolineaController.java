@@ -27,7 +27,7 @@ public class AerolineaController {
             return ResponseEntity.ok(aerolineaService.buscarAerolineas());
         }
 
-        @GetMapping("/id")
+        @GetMapping("/{id}")
         public ResponseEntity<AerolineaDto> getAerolineaById(@PathVariable Long id) {
             return aerolineaService.buscarAerolineaPorId(id)
                     .map(aerolinea -> ResponseEntity.ok().body(aerolinea))
@@ -39,7 +39,7 @@ public class AerolineaController {
             return crearNuevoAerolinea(aerolinea);
         }
 
-        @PutMapping("/id")
+        @PutMapping("/{id}")
         public ResponseEntity<AerolineaDto> actualizarAerolinea(@PathVariable Long id, @RequestBody AerolineaDto nuevoAerolinea) throws URISyntaxException {
             Optional<AerolineaDto> aerolineaUpdate = aerolineaService.actualizarAerolinea(id, nuevoAerolinea);
             return aerolineaUpdate.map(aerolinea -> ResponseEntity.ok(aerolinea))
@@ -48,7 +48,7 @@ public class AerolineaController {
                     });
         }
 
-        @DeleteMapping("/id")
+        @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteAerolinea(@PathVariable Long id) {
             aerolineaService.eliminarAerolinea(id);
             return ResponseEntity.noContent().build();

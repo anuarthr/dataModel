@@ -8,10 +8,10 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface AerolineaMapper {
     AerolineaMapper INSTANCE = Mappers.getMapper(AerolineaMapper.class);
-    Aerolinea aerolineaToDTO(AerolineaDto aerolineaDto);
-    @Mapping(target = "id", ignore = true)
-    Aerolinea aerolineaDTOWithoutIdToAerolinea(AerolineaDto aerolineaDto);
-    AerolineaDto aerolineaToAerolineaDTO(Aerolinea aerolinea);
-    @Mapping(target = "id", ignore = true)
-    AerolineaDto aerolineaToAerolineaDTOWithoutId(Aerolinea aerolinea);
+    Aerolinea aerolineaDtoToAerolinea(AerolineaDto aerolineaDto);
+    @Mapping(target = "idAerolinea", ignore = true)
+    Aerolinea aerolineaDtoWithoutIdToAerolinea(AerolineaDto aerolineaDto);
+    AerolineaDto aerolineaToAerolineaDto(Aerolinea aerolinea);
+    @Mapping(target = "idAerolinea", ignore = true)
+    AerolineaDto aerolineaToAerolineaDtoWithoutId(Aerolinea aerolinea);
 }
