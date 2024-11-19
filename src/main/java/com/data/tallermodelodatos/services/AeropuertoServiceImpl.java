@@ -46,7 +46,7 @@ public class AeropuertoServiceImpl implements AeropuertoService{
     @Override
     public List<AeropuertoDto> buscarAeropuertosPorIds(List<Long> ids) {
         List<AeropuertoDto> aeropuertos = new ArrayList<>();
-        aeropuertoRepository.findByIdIn(ids).forEach(
+        aeropuertoRepository.findByIdAeropuertoIn(ids).forEach(
                 aeropuerto -> aeropuertos.add(aeropuertoMapper.aeropuertoToAeropuertoDtoWithoutId(aeropuerto)));
         return aeropuertos;}
 

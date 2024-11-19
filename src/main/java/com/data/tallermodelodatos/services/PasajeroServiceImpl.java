@@ -49,7 +49,7 @@ public class PasajeroServiceImpl implements PasajeroService{
     @Override
     public List<PasajeroDto> buscarPasajerosPorIds(List<Long> ids) {
         List<PasajeroDto> pasajeros = new ArrayList<>();
-        pasajeroRepository.findByIdIn(ids).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
+        pasajeroRepository.findByIdPasajeroIn(ids).forEach(pasajero -> pasajeros.add(pasajeroMapper.pasajeroToPasajeroDtoWithoutId(pasajero)));
         return pasajeros;
     }
 
@@ -60,8 +60,8 @@ public class PasajeroServiceImpl implements PasajeroService{
         return pasajeros;}
 
     @Override
-    public Optional<PasajeroDto> buscarPasajeroPorPasaporte(Long pasaporte) {
-        return pasajeroRepository.findByPasaporteIn(pasaporte).map(pasajero -> pasajeroMapper.pasajeroToPasajeroDto(pasajero));
+    public Optional<PasajeroDto> buscarPasajeroPorPasaporte(String pasaporte) {
+        return pasajeroRepository.findByPasaporte(pasaporte).map(pasajero -> pasajeroMapper.pasajeroToPasajeroDto(pasajero));
     }
 
     @Override

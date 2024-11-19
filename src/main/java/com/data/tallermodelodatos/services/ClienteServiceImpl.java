@@ -42,7 +42,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public List<ClienteDto> buscarClientesbyIds(List<Long> ids) {
-        return clienteRepository.findByIdIn(ids).stream()
+        return clienteRepository.findByIdClienteIn(ids).stream()
                 .map(clienteMapper::clienteToClienteDtoWithoutId)
                 .collect(Collectors.toList());
     }

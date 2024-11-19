@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PasajeroRepository extends JpaRepository<Pasajero, Long> {
-    List<Pasajero> findByIdIn(List<Long> ids);
-    Optional<Pasajero> findByPasaporteIn(Long pasaporte);
+    List<Pasajero> findByIdPasajeroIn(List<Long> ids);
+    Optional<Pasajero> findByPasaporte(String pasaporte);
     List<Pasajero> findAllByNombre(String nombre);
     List<Pasajero> findAllByApellido(String apellido);
     List<Pasajero> findAllByNacionalidad(String nacionalidad);

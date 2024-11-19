@@ -4,9 +4,12 @@ import com.data.tallermodelodatos.dto.ClienteMapper;
 import com.data.tallermodelodatos.dto.ReservaDto;
 import com.data.tallermodelodatos.dto.ReservaMapper;
 import com.data.tallermodelodatos.dto.VueloMapper;
+import com.data.tallermodelodatos.entities.Cliente;
 import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.repositories.ReservaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,18 +49,18 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     @Override
-    public List<ReservaDto> buscarReservasPorCliente(Long clienteId) {
-        return reservaRepository.findByClienteId(clienteId).stream()
-                .map(reservaMapper::reservaToReservaDto)
-                .collect(Collectors.toList());
+    public List<ReservaDto> buscarReservasPorCliente(Cliente cliente) {
+        List<ReservaDto> reservasC = new ArrayList<>();
+        reservaRepository.findByCliente(cliente).forEach(
+                reserva -> reservasC.add(reservaMapper.reservaToReservaDtoWithoutId(reserva))
+        );
+        return reservasC;
     }
 
     @Override
     public Optional<ReservaDto> actualizarReserva(Long id, ReservaDto reservaDto) {
         return reservaRepository.findById(id).map(oldReserva -> {
             oldReserva.setFechaDeReserva(reservaDto.fechaDeReserva());
-            oldReserva.setVuelos(reservaDto.vuelos().stream().map(vuelo -> vueloMapper.vueloDtoToVuelo(vuelo)).toList());
-            oldReserva.setCliente(clienteMapper.clienteDtoToCliente(reservaDto.cliente()));
             oldReserva.setNumeroDePasajeros(reservaDto.numeroDePasajeros());
             Reserva updatedReserva = reservaRepository.save(oldReserva);
             return reservaMapper.reservaToReservaDto(updatedReserva);

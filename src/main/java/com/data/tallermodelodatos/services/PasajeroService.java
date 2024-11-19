@@ -13,7 +13,7 @@ public interface PasajeroService {
     List<PasajeroDto> buscarPasajerosPorNombre(String nombre);
     List<PasajeroDto> buscarPasajerosPorIds(List<Long> ids);
     List<PasajeroDto> buscarPasajerosPorApellido(String apellido);
-    Optional<PasajeroDto> buscarPasajeroPorPasaporte(Long pasaporte);
+    Optional<PasajeroDto> buscarPasajeroPorPasaporte(String pasaporte);
     List<PasajeroDto> buscarPasajerosPorNacionalidad(String nacionalidad);
     Optional<PasajeroDto> actualizarPasajero(Long id, PasajeroDto pasajero);
     void eliminarPasajero(Long id);

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class AerolineaServiceImpl implements AerolineaService {
     @Autowired
     private AerolineaRepository aerolineaRepository;
@@ -45,7 +44,7 @@ public class AerolineaServiceImpl implements AerolineaService {
     @Override
     public List<AerolineaDto> buscarAerolineasPorIds(List<Long> ids) {
         List<AerolineaDto> aerolineas = new ArrayList<>();
-        aerolineaRepository.findByIdIn(ids).forEach(
+        aerolineaRepository.findByIdAerolineaIn(ids).forEach(
                 aerolinea -> aerolineas.add(aerolineaMapper.aerolineaToAerolineaDtoWithoutId(aerolinea)));
         return aerolineas;}
 
