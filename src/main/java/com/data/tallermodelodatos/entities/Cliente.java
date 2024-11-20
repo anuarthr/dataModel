@@ -27,6 +27,9 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
     @OneToMany(mappedBy = "cliente")
     private List<Reserva> reservas = new ArrayList<>();
 }

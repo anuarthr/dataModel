@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/clientes")
-
+@CrossOrigin(origins = "http://localhost:5173")
 public class ClienteController {
 
     private final ClienteService clienteService;
