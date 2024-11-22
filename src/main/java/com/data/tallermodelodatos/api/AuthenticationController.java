@@ -52,6 +52,7 @@ public class AuthenticationController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new JwtResponse(jwtToken, "Bearer", userDetails.getUsername(), roles));
     }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest sRequest) {
         Cliente cliente = new Cliente();
