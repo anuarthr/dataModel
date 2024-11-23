@@ -65,14 +65,13 @@ public class AuthenticationController {
         Cliente newCliente = clienteRepository.save(cliente);
 
         User user = new User();
-        user.setUsername(sRequest.email());
+        user.setUsername(sRequest.username());
         user.setPassword(passwordEncoder.encode(sRequest.password()));
         user.setEmail(sRequest.email());
         Set<String> roles = new HashSet<>();
         roles.add("ROLE_USER");
         user.setRoles(roles);
         userRepository.save(user);
-
         return ResponseEntity.ok(newCliente);
     }
 }
