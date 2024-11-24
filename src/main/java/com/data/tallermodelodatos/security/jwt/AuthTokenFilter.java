@@ -21,23 +21,25 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwt = parseJwt(request);
-        if(jwt != null && jwtUtil.validateJwtToken(jwt)){
-            String username = jwtUtil.getUsernameFromJwtToken(jwt);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails,
-                            null,
-                            userDetails.getAuthorities());
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        try {
+            String jwt = parseJwt(request);
+            if (jwt != null && jwtUtil.validateJwtToken(jwt)) {
+                String username = jwtUtil.getUsernameFromJwtToken(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication: {}", e);
         }
         filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")){
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
         return null;

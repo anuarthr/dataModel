@@ -2,10 +2,12 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.dto.UserDto;
 import com.data.tallermodelodatos.entities.User;
-import com.data.tallermodelodatos.dto.UserMapper;
 import com.data.tallermodelodatos.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -16,16 +18,24 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserMapper userMapper;
+    private PasswordEncoder passwordEncoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setUsername(userDto.username());
-        user.setPassword(userDto.password());
-        user.setEmail(userDto.email());
-        User updatedUser = userRepository.save(user);
-        return userMapper.userToUserDto(updatedUser);
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    existingUser.setEmail(userDto.email());
+                    existingUser.setPassword(passwordEncoder.encode(userDto.password()));
+                    existingUser.setUsername(userDto.username());
+                    User updatedUser = userRepository.save(existingUser);
+                    return convertToDto(updatedUser);
+                })
+                .orElseThrow(() -> {
+                    logger.error("User not found with ID: {}", id);
+                    return new RuntimeException("User not found");
+                });
     }
 
     @Override
@@ -35,14 +45,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> findByUsername(String username) {
-        return userRepository.findByUsername(username).map(userMapper::userToUserDto);
+        return userRepository.findByUsername(username).map(this::convertToDto);
     }
 
     @Override
     public boolean isUserAuthorized(Long id, String username) {
-        Optional<User> userOpt = userRepository.findById(id);
-        return userOpt.isPresent() && userOpt.get().getUsername().equals(username);
+        return false;
     }
 
+    @Override
+    public Optional<UserDto> findById(Long id) {
+        logger.info("Buscando usuario con id: {}", id);
+        return userRepository.findById(id).map(this::convertToDto);
+    }
 
+    private UserDto convertToDto(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getRoles()
+        );
+    }
 }

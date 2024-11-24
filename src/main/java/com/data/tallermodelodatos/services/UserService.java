@@ -8,4 +8,5 @@ public interface UserService {
     void deleteUser(Long id);
     Optional<UserDto> findByUsername(String username);
     boolean isUserAuthorized(Long id, String username);
+    Optional<UserDto> findById(Long id);
 }

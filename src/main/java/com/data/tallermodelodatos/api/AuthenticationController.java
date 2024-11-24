@@ -21,7 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +60,14 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest sRequest) {
+        if (userRepository.existsByUsername(sRequest.username())) {
+            return ResponseEntity.badRequest().body("Username en uso");
+        }
+
+        if (userRepository.existsByEmail(sRequest.email())) {
+            return ResponseEntity.badRequest().body("Email en uso");
+        }
+
         Cliente cliente = new Cliente();
         cliente.setNombre(sRequest.nombre());
         cliente.setApellido(sRequest.apellido());
