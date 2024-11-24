@@ -3,13 +3,16 @@ package com.data.tallermodelodatos.api;
 import com.data.tallermodelodatos.dto.JwtResponse;
 import com.data.tallermodelodatos.dto.LoginRequest;
 import com.data.tallermodelodatos.dto.SignupRequest;
+import com.data.tallermodelodatos.dto.UserDto;
 import com.data.tallermodelodatos.entities.Cliente;
 import com.data.tallermodelodatos.entities.User;
 import com.data.tallermodelodatos.repositories.ClienteRepository;
 import com.data.tallermodelodatos.repositories.UserRepository;
 import com.data.tallermodelodatos.security.jwt.JwtUtil;
 import com.data.tallermodelodatos.security.services.UserDetailsImpl;
+import com.data.tallermodelodatos.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +42,8 @@ public class AuthenticationController {
     private ClienteRepository clienteRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -73,5 +79,16 @@ public class AuthenticationController {
         user.setRoles(roles);
         userRepository.save(user);
         return ResponseEntity.ok(newCliente);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> obtenerUsuarioLogueado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<UserDto> userOpt = userService.findByUsername(username);
+        if (userOpt.isPresent()) {
+            return ResponseEntity.ok(userOpt.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 }

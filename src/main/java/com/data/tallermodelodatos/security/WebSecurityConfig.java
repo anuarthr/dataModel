@@ -16,6 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -47,13 +51,33 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                }))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/flights/**", "/api/v1/reservations/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/vuelos/**", "/api/v1/reservas/**", "/api/v1/aerolineas/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         http.authenticationProvider(authenticationProvider());
