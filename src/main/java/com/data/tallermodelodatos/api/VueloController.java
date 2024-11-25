@@ -61,7 +61,7 @@ public class VueloController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVuelo(@PathVariable Long id) {
-        vueloService.deleteVuelo(id);
+        vueloService.eliminarVuelo(id);
         return ResponseEntity.noContent().build();
     }
 }
