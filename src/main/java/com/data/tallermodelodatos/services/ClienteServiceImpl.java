@@ -55,6 +55,7 @@ public class ClienteServiceImpl implements ClienteService {
                     existingCliente.setTelefono(clienteDto.telefono());
                     existingCliente.setEmail(clienteDto.email());
                     existingCliente.setPassword(clienteDto.password());
+                    existingCliente.setUsername(clienteDto.username());
                     Cliente updatedCliente = clienteRepository.save(existingCliente);
                     return convertToDto(updatedCliente);
                 });
@@ -73,7 +74,8 @@ public class ClienteServiceImpl implements ClienteService {
                 cliente.getDireccion(),
                 cliente.getTelefono(),
                 cliente.getEmail(),
-                cliente.getPassword()
+                cliente.getPassword(),
+                cliente.getUsername()
         );
     }
 
@@ -86,6 +88,7 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setTelefono(clienteDto.telefono());
         cliente.setEmail(clienteDto.email());
         cliente.setPassword(clienteDto.password());
+        cliente.setUsername(clienteDto.username());
         return cliente;
     }
 }

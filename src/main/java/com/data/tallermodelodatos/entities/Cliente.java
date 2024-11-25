@@ -30,6 +30,9 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @OneToMany(mappedBy = "cliente")
     private List<Reserva> reservas = new ArrayList<>();
 }

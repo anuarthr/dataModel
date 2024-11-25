@@ -2,7 +2,6 @@ package com.data.tallermodelodatos.repositories;
 
 import com.data.tallermodelodatos.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {

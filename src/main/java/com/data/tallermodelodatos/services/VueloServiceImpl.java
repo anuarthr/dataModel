@@ -2,7 +2,13 @@ package com.data.tallermodelodatos.services;
 
 import com.data.tallermodelodatos.dto.VueloMapper;
 import com.data.tallermodelodatos.dto.VueloDto;
+import com.data.tallermodelodatos.entities.Aerolinea;
+import com.data.tallermodelodatos.entities.Aeropuerto;
 import com.data.tallermodelodatos.entities.Vuelo;
+import com.data.tallermodelodatos.exception.AerolineaNotFoundException;
+import com.data.tallermodelodatos.exception.AeropuertoNotFoundException;
+import com.data.tallermodelodatos.repositories.AerolineaRepository;
+import com.data.tallermodelodatos.repositories.AeropuertoRepository;
 import com.data.tallermodelodatos.repositories.VueloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,23 +21,34 @@ import java.util.Optional;
 public class VueloServiceImpl implements VueloService {
     @Autowired
     private VueloRepository vueloRepository;
+    @Autowired
+    private AerolineaRepository aerolineaRepository;
+    @Autowired
+    private AeropuertoRepository aeropuertoRepository;
     private final VueloMapper vueloMapper;
 
-    public VueloServiceImpl(VueloRepository vueloRepository, VueloMapper vueloMapper) {
+    public VueloServiceImpl(VueloRepository vueloRepository, VueloMapper vueloMapper, AerolineaRepository aerolineaRepository, AeropuertoRepository aeropuertoRepository) {
         this.vueloRepository = vueloRepository;
         this.vueloMapper = vueloMapper;
+        this.aerolineaRepository = aerolineaRepository;
+        this.aeropuertoRepository = aeropuertoRepository;
     }
 
     @Override
-    public VueloDto guardarVuelo(VueloDto vuelo) {
-        Vuelo savedVuelo = vueloRepository.save(vueloMapper.vueloDtoToVuelo(vuelo));
+    public VueloDto guardarVuelo(VueloDto vueloDto) {
+        Vuelo vuelo = vueloMapper.vueloDtoToVuelo(vueloDto);
+        Aerolinea aerolinea = aerolineaRepository.findById(vueloDto.aerolineaId()).orElseThrow(AerolineaNotFoundException::new);
+        Aeropuerto aeropuerto = aeropuertoRepository.findById(vueloDto.aeropuertoId()).orElseThrow(AeropuertoNotFoundException::new);
+        vuelo.setAerolinea(aerolinea);
+        vuelo.setAeropuerto(aeropuerto);
+        Vuelo savedVuelo = vueloRepository.save(vuelo);
         return vueloMapper.vueloToVueloDto(savedVuelo);
     }
 
     @Override
     public Optional<VueloDto> buscarVueloPorId(Long id) {
         return vueloRepository.findById(id).map(
-                vueloMapper::vueloToVueloDto);
+                vuelo -> vueloMapper.vueloToVueloDto(vuelo));
     }
 
     @Override
@@ -67,16 +84,18 @@ public class VueloServiceImpl implements VueloService {
     }
 
     @Override
-    public Optional<VueloDto> actualizarVuelo(Long id, VueloDto vuelo) {
+    public Optional<VueloDto> actualizarVuelo(Long id, VueloDto vueloDto) {
         return vueloRepository.findById(id).map(oldVuelo -> {
-            oldVuelo.setOrigen(vuelo.origen());
-            oldVuelo.setDestino(vuelo.destino());
-            oldVuelo.setFechaDeSalida(vuelo.fechaDeSalida());
-            oldVuelo.setHoraDeSalida(vuelo.horaDeSalida());
-            oldVuelo.setDuracion(vuelo.duracion());
-            oldVuelo.setCapacidad(vuelo.capacidad());
-            oldVuelo.setAerolinea(vueloMapper.aerolineaDtoToAerolinea(vuelo.aerolineaId()));
-            oldVuelo.setAeropuerto(vueloMapper.aeropuertoDtoToAeropuerto(vuelo.aeropuertoId()));
+            oldVuelo.setOrigen(vueloDto.origen());
+            oldVuelo.setDestino(vueloDto.destino());
+            oldVuelo.setFechaDeSalida(vueloDto.fechaDeSalida());
+            oldVuelo.setHoraDeSalida(vueloDto.horaDeSalida());
+            oldVuelo.setDuracion(vueloDto.duracion());
+            oldVuelo.setCapacidad(vueloDto.capacidad());
+            Aerolinea aerolinea = aerolineaRepository.findById(vueloDto.aerolineaId()).orElseThrow(AerolineaNotFoundException::new);
+            Aeropuerto aeropuerto = aeropuertoRepository.findById(vueloDto.aeropuertoId()).orElseThrow(AeropuertoNotFoundException::new);
+            oldVuelo.setAerolinea(aerolinea);
+            oldVuelo.setAeropuerto(aeropuerto);
             return vueloMapper.vueloToVueloDto(vueloRepository.save(oldVuelo));
         });
     }

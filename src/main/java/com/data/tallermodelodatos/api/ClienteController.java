@@ -7,7 +7,6 @@ import com.data.tallermodelodatos.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.data.tallermodelodatos.exception.ClientNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -42,13 +41,18 @@ public class ClienteController {
         logger.info("Fetching cliente con id: {}", id);
         return clienteService.buscarClientePorId(id)
                 .map(clienteDto -> ResponseEntity.ok().body(clienteDto))
-                .orElseThrow(ClientNotFoundException::new);
+                .orElseThrow(() -> new RuntimeException("Client not found"));
     }
 
     @PostMapping()
     public ResponseEntity<ClienteDto> createCliente(@RequestBody ClienteDto clienteDto) throws URISyntaxException {
         logger.info("Creando nuevo cliente {}", clienteDto);
-        return createNewCliente(clienteDto);
+        ClienteDto newCliente = clienteService.guardarCliente(clienteDto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newCliente.idCliente())
+                .toUri();
+        return ResponseEntity.created(location).body(newCliente);
     }
 
     @PutMapping("/{id}")
@@ -58,32 +62,19 @@ public class ClienteController {
         clienteUpdated.ifPresent(cliente -> {
             UserDto userDto = new UserDto(
                     cliente.idCliente(),
+                    cliente.username(),
                     cliente.email(),
                     cliente.password(),
-                    cliente.email(),
-                    Set.of("ROLE_USER")
+                    Set.of("ROLE_USER"),
+                    cliente.nombre(),
+                    cliente.apellido(),
+                    cliente.direccion(),
+                    cliente.telefono()
             );
             userService.updateUser(id, userDto);
         });
         return clienteUpdated.map(cliente -> ResponseEntity.ok(cliente))
-                .orElseGet(() -> createNewCliente(newClienteDto));
-    }
-
-    private ResponseEntity<ClienteDto> createNewCliente(ClienteDto clienteDto) {
-        ClienteDto newCliente = clienteService.guardarCliente(clienteDto);
-        UserDto userDto = new UserDto(
-                newCliente.idCliente(),
-                newCliente.email(),
-                newCliente.password(),
-                newCliente.email(),
-                Set.of("ROLE_USER")
-        );
-        userService.updateUser(newCliente.idCliente(), userDto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(newCliente.idCliente())
-                .toUri();
-        return ResponseEntity.created(location).body(newCliente);
+                .orElseThrow(() -> new RuntimeException("Client not found"));
     }
 
     @DeleteMapping("/{id}")

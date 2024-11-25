@@ -1,101 +1,112 @@
 package com.data.tallermodelodatos.api;
 
-import com.data.tallermodelodatos.dto.JwtResponse;
+import com.data.tallermodelodatos.dto.ClienteDto;
 import com.data.tallermodelodatos.dto.LoginRequest;
-import com.data.tallermodelodatos.dto.SignupRequest;
+import com.data.tallermodelodatos.dto.LoginResponse;
 import com.data.tallermodelodatos.dto.UserDto;
-import com.data.tallermodelodatos.entities.Cliente;
 import com.data.tallermodelodatos.entities.User;
-import com.data.tallermodelodatos.repositories.ClienteRepository;
-import com.data.tallermodelodatos.repositories.UserRepository;
-import com.data.tallermodelodatos.security.jwt.JwtUtil;
 import com.data.tallermodelodatos.security.services.UserDetailsImpl;
+import com.data.tallermodelodatos.security.jwt.JwtUtil;
+import com.data.tallermodelodatos.services.ClienteService;
 import com.data.tallermodelodatos.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private ClienteRepository clienteRepository;
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwtToken = jwtUtil.generateJwtToken(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(jwtToken, "Bearer", userDetails.getUsername(), roles));
-    }
+    @Autowired
+    private ClienteService clienteService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest sRequest) {
-        if (userRepository.existsByUsername(sRequest.username())) {
-            return ResponseEntity.badRequest().body("Username en uso");
+    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) throws URISyntaxException {
+        if (userService.existsByUsername(userDto.username())) {
+            return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
-        if (userRepository.existsByEmail(sRequest.email())) {
-            return ResponseEntity.badRequest().body("Email en uso");
+        if (userService.existsByEmail(userDto.email())) {
+            return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
 
-        Cliente cliente = new Cliente();
-        cliente.setNombre(sRequest.nombre());
-        cliente.setApellido(sRequest.apellido());
-        cliente.setDireccion(sRequest.direccion());
-        cliente.setTelefono(sRequest.telefono());
-        cliente.setEmail(sRequest.email());
-        cliente.setPassword(passwordEncoder.encode(sRequest.password()));
-        Cliente newCliente = clienteRepository.save(cliente);
+        ClienteDto clienteDto = new ClienteDto(
+                null,
+                userDto.nombre(),
+                userDto.apellido(),
+                userDto.direccion(),
+                userDto.telefono(),
+                userDto.email(),
+                passwordEncoder.encode(userDto.password()),
+                userDto.username()
+        );
+        ClienteDto newCliente = clienteService.guardarCliente(clienteDto);
 
         User user = new User();
-        user.setUsername(sRequest.username());
-        user.setPassword(passwordEncoder.encode(sRequest.password()));
-        user.setEmail(sRequest.email());
-        Set<String> roles = new HashSet<>();
-        roles.add("ROLE_USER");
-        user.setRoles(roles);
-        userRepository.save(user);
-        return ResponseEntity.ok(newCliente);
+        user.setId(newCliente.idCliente());
+        user.setUsername(newCliente.username());
+        user.setEmail(newCliente.email());
+        user.setPassword(newCliente.password());
+        user.setNombre(newCliente.nombre());
+        user.setApellido(newCliente.apellido());
+        user.setDireccion(newCliente.direccion());
+        user.setTelefono(newCliente.telefono());
+        user.setRoles(Set.of("ROLE_USER"));
+        userService.saveUser(user);
+
+        UserDto newUser = new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRoles(),
+                user.getNombre(),
+                user.getApellido(),
+                user.getDireccion(),
+                user.getTelefono()
+        );
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newCliente.idCliente())
+                .toUri();
+
+        return ResponseEntity.created(location).body(newUser);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserDto> obtenerUsuarioLogueado() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Optional<UserDto> userOpt = userService.findByUsername(username);
-        if (userOpt.isPresent()) {
-            return ResponseEntity.ok(userOpt.get());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtil.generateJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserDto userDto = userService.findByUsername(userDetails.getUsername()).orElseThrow();
+
+        return ResponseEntity.ok(new LoginResponse(jwt, userDto));
     }
 }

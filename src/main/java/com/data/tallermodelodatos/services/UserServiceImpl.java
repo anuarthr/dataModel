@@ -29,6 +29,10 @@ public class UserServiceImpl implements UserService {
                     existingUser.setEmail(userDto.email());
                     existingUser.setPassword(passwordEncoder.encode(userDto.password()));
                     existingUser.setUsername(userDto.username());
+                    existingUser.setNombre(userDto.nombre());
+                    existingUser.setApellido(userDto.apellido());
+                    existingUser.setDireccion(userDto.direccion());
+                    existingUser.setTelefono(userDto.telefono());
                     User updatedUser = userRepository.save(existingUser);
                     return convertToDto(updatedUser);
                 })
@@ -59,13 +63,32 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).map(this::convertToDto);
     }
 
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
     private UserDto convertToDto(User user) {
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
-                user.getPassword(),
                 user.getEmail(),
-                user.getRoles()
+                user.getPassword(),
+                user.getRoles(),
+                user.getNombre(),
+                user.getApellido(),
+                user.getDireccion(),
+                user.getTelefono()
         );
     }
 }
