@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReservaService {
-    ReservaDto guardarReserva(ReservaDto reservaDto);
+    ReservaDto guardarReserva(ReservaDto reservaDto, Cliente cliente);
     Optional<ReservaDto> buscarReservaPorId(Long id);
     List<ReservaDto> buscarReservas();
     List<ReservaDto> buscarReservasPorCliente(Cliente cliente);

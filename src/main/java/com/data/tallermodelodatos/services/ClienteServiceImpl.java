@@ -39,6 +39,11 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    public Optional<Cliente> buscarClienteEntityPorId(Long id) {
+        return clienteRepository.findById(id);
+    }
+
+    @Override
     public ClienteDto guardarCliente(ClienteDto clienteDto) {
         Cliente cliente = convertToEntity(clienteDto);
         Cliente savedCliente = clienteRepository.save(cliente);

@@ -1,9 +1,7 @@
 package com.data.tallermodelodatos.services;
 
-import com.data.tallermodelodatos.dto.ClienteMapper;
 import com.data.tallermodelodatos.dto.ReservaDto;
 import com.data.tallermodelodatos.dto.ReservaMapper;
-import com.data.tallermodelodatos.dto.VueloMapper;
 import com.data.tallermodelodatos.entities.Cliente;
 import com.data.tallermodelodatos.entities.Reserva;
 import com.data.tallermodelodatos.repositories.ReservaRepository;
@@ -18,19 +16,16 @@ import java.util.stream.Collectors;
 public class ReservaServiceImpl implements ReservaService {
     private final ReservaRepository reservaRepository;
     private final ReservaMapper reservaMapper;
-    private final ClienteMapper clienteMapper;
-    private final VueloMapper vueloMapper;
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, ReservaMapper reservaMapper, ClienteMapper clienteMapper, VueloMapper vueloMapper) {
+    public ReservaServiceImpl(ReservaRepository reservaRepository, ReservaMapper reservaMapper) {
         this.reservaRepository = reservaRepository;
         this.reservaMapper = reservaMapper;
-        this.clienteMapper = clienteMapper;
-        this.vueloMapper = vueloMapper;
     }
 
     @Override
-    public ReservaDto guardarReserva(ReservaDto reservaDto) {
-        Reserva reserva = reservaMapper.reservaDtoWithoutIdToReserva(reservaDto);
+    public ReservaDto guardarReserva(ReservaDto reservaDto, Cliente cliente) {
+        Reserva reserva = reservaMapper.reservaDtoToReserva(reservaDto);
+        reserva.setCliente(cliente);
         Reserva savedReserva = reservaRepository.save(reserva);
         return reservaMapper.reservaToReservaDto(savedReserva);
     }
@@ -66,6 +61,7 @@ public class ReservaServiceImpl implements ReservaService {
             return reservaMapper.reservaToReservaDto(updatedReserva);
         });
     }
+
     @Override
     public void eliminarReserva(Long id) {
         reservaRepository.deleteById(id);
